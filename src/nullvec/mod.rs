@@ -2,6 +2,7 @@
 
 use num::Float;
 
+mod nullvec_impl;
 mod nullvec_ops;
 
 #[macro_use]
@@ -113,29 +114,6 @@ macro_rules! impl_new_nullable {
 impl_new_nullable!(f64);
 impl_new_nullable!(f32);
 
-
-impl<T> NullVec<T> {
-
-    pub fn len(&self) -> usize {
-        self.data.len()
-    }
-
-    pub fn is_nan(&self) -> Vec<bool> {
-        match self.mask {
-            Some(ref mask) => mask.clone(),
-            None => vec![false; self.len()]
-        }
-    }
-
-    pub fn not_nan(&self) -> Vec<bool> {
-        match self.mask {
-            Some(ref mask) => mask.iter().map(|x| !x).collect::<Vec<bool>>(),
-            None => vec![true; self.len()]
-        }
-    }
-}
-
-
 #[cfg(test)]
 mod tests {
 
@@ -200,35 +178,5 @@ mod tests {
         let (not_null, mask) = maybe_null(values);
         assert_eq!(not_null, vec![1.1, 1.2, 1.3]);
         assert_eq!(mask, None);
-    }
-
-    #[test]
-    fn test_int_isnan() {
-        let values: Vec<usize> = vec![1, 2, 3];
-        let nvec = NullVec::new(values);
-        let res = nvec.is_nan();
-        assert_eq!(res, vec![false, false, false]);
-
-        let res = nvec.not_nan();
-        assert_eq!(res, vec![true, true, true]);
-
-        let values: Vec<usize> = vec![1, 2, 3];
-        let nvec = NullVec::with_mask(values, Some(vec![false, false, true]));
-        let res = nvec.is_nan();
-        assert_eq!(res, vec![false, false, true]);
-
-        let res = nvec.not_nan();
-        assert_eq!(res, vec![true, true, false]);
-    }
-
-    #[test]
-    fn test_float_isnan() {
-        let values: Vec<f64> = vec![1.1, f64::NAN, 1.3];
-        let nvec = NullVec::new(values);
-        let res = nvec.is_nan();
-        assert_eq!(res, vec![false, true, false]);
-
-        let res = nvec.not_nan();
-        assert_eq!(res, vec![true, false, true]);
     }
 }
