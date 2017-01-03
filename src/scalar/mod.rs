@@ -29,7 +29,7 @@ use traits::TypeDispatchScalar;
 #[derive(Debug, PartialEq)]
 pub enum Nullable<T> {
     Value(T),
-    Null
+    Null,
 }
 
 impl<T> TypeDispatchScalar<T> for Nullable<T> {

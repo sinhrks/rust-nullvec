@@ -28,7 +28,9 @@ macro_rules! add_op {
                 match (self, other) {
                     (Nullable::Null, _) => Nullable::Null,
                     (_, &Nullable::Null) => Nullable::Null,
-                    (Nullable::Value(ref v1), &Nullable::Value(ref v2)) => Nullable::new(v1.$op(*v2))
+                    (Nullable::Value(ref v1), &Nullable::Value(ref v2)) => {
+                        Nullable::new(v1.$op(*v2))
+                    }
                 }
             }
         }
@@ -41,7 +43,9 @@ macro_rules! add_op {
                 match (self, other) {
                     (&Nullable::Null, _) => Nullable::Null,
                     (_, Nullable::Null) => Nullable::Null,
-                    (&Nullable::Value(ref v1), Nullable::Value(ref v2)) => Nullable::new(v1.$op(*v2))
+                    (&Nullable::Value(ref v1), Nullable::Value(ref v2)) => {
+                        Nullable::new(v1.$op(*v2))
+                    }
                 }
             }
         }
@@ -54,7 +58,9 @@ macro_rules! add_op {
                 match (self, other) {
                     (&Nullable::Null, _) => Nullable::Null,
                     (_, &Nullable::Null) => Nullable::Null,
-                    (&Nullable::Value(ref v1), &Nullable::Value(ref v2)) => Nullable::new(v1.$op(*v2))
+                    (&Nullable::Value(ref v1), &Nullable::Value(ref v2)) => {
+                        Nullable::new(v1.$op(*v2))
+                    }
                 }
             }
         }
