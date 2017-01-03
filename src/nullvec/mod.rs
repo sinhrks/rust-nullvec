@@ -32,7 +32,7 @@ use traits::TypeDispatch;
 pub struct NullVec<T> {
     data: Vec<T>,
     // ToDo: use BitVec
-    mask: Option<Vec<bool>>
+    mask: Option<Vec<bool>>,
 }
 
 
@@ -96,7 +96,9 @@ macro_rules! impl_new_nullable {
             fn with_mask(values: Vec<$t>, mask: Option<Vec<bool>>) -> Self {
                 let (not_null, null_mask) = maybe_null(values);
                 let new_mask = match (null_mask, mask) {
-                    (Some(lmask), Some(rmask)) => Some(Elemwise::elemwise_oo(lmask, rmask, |x, y| x | y)),
+                    (Some(lmask), Some(rmask)) => Some(Elemwise::elemwise_oo(lmask,
+                                                                             rmask,
+                                                                             |x, y| x | y)),
                     (Some(lmask), None) => Some(lmask),
                     (None, Some(rmask)) => Some(rmask),
                     (None, None) => None

@@ -4,7 +4,6 @@ use num::Float;
 use super::NullVec;
 
 impl<T> NullVec<T> {
-
     pub fn len(&self) -> usize {
         self.data.len()
     }
@@ -12,21 +11,21 @@ impl<T> NullVec<T> {
     pub fn has_nan(&self) -> bool {
         match self.mask {
             Some(_) => true,
-            None => false
+            None => false,
         }
     }
 
     pub fn is_nan(&self) -> Vec<bool> {
         match self.mask {
             Some(ref mask) => mask.clone(),
-            None => vec![false; self.len()]
+            None => vec![false; self.len()],
         }
     }
 
     pub fn not_nan(&self) -> Vec<bool> {
         match self.mask {
             Some(ref mask) => mask.iter().map(|x| !x).collect::<Vec<bool>>(),
-            None => vec![true; self.len()]
+            None => vec![true; self.len()],
         }
     }
 }
@@ -35,30 +34,27 @@ impl<T: Clone> Clone for NullVec<T> {
     fn clone(&self) -> Self {
         NullVec {
             data: self.data.clone(),
-            mask: self.mask.clone()
+            mask: self.mask.clone(),
         }
     }
 }
 
 impl<T: Clone> NullVec<T> {
-
     pub fn dropna(&self) -> Self {
         match &self.mask {
             &Some(ref mask) => {
                 let new_values: Vec<T> = mask.iter()
-                                             .zip(self.data.iter())
-                                             .filter(|&(&m, _)| !m)
-                                             .map(|(_, v)| v.clone())
-                                             .collect();
+                    .zip(self.data.iter())
+                    .filter(|&(&m, _)| !m)
+                    .map(|(_, v)| v.clone())
+                    .collect();
 
                 NullVec {
                     data: new_values,
-                    mask: None
+                    mask: None,
                 }
-            },
-            &None => {
-                self.clone()
             }
+            &None => self.clone(),
         }
     }
 
@@ -66,22 +62,16 @@ impl<T: Clone> NullVec<T> {
         match &self.mask {
             &Some(ref mask) => {
                 let new_values: Vec<T> = mask.iter()
-                                             .zip(self.data.iter())
-                                             .map(|(&m, v)| if m == true {
-                                                 value.clone()
-                                             } else {
-                                                 v.clone()
-                                             })
-                                             .collect();
+                    .zip(self.data.iter())
+                    .map(|(&m, v)| if m == true { value.clone() } else { v.clone() })
+                    .collect();
 
                 NullVec {
                     data: new_values,
-                    mask: None
+                    mask: None,
                 }
-            },
-            &None => {
-                self.clone()
             }
+            &None => self.clone(),
         }
     }
 }
