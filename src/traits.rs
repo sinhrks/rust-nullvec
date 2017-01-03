@@ -6,4 +6,6 @@ pub trait TypeDispatchScalar<T>: Sized {
 
 pub trait TypeDispatch<T>: Sized {
     fn new(values: Vec<T>) -> Self;
+
+    fn with_mask(values: Vec<T>, mask: Option<Vec<bool>>) -> Self;
 }
