@@ -1,6 +1,7 @@
-use std::ops::{Add, Sub, Mul, Div, Rem};
+use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 
-use super::Nullable;
+use scalar::Nullable;
+use traits::TypeDispatchScalar;
 
 macro_rules! add_op {
     ($tr:ident, $op:ident) => {
@@ -64,12 +65,17 @@ add_op!(Sub, sub);
 add_op!(Mul, mul);
 add_op!(Div, div);
 add_op!(Rem, rem);
+add_op!(BitAnd, bitand);
+add_op!(BitOr, bitor);
+add_op!(BitXor, bitxor);
+
+// ToDo: assign ops
 
 
 #[cfg(test)]
 mod tests {
 
-    use super::super::Nullable;
+    use scalar::Nullable;
 
     #[test]
     fn test_int_ops_add() {
