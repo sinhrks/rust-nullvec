@@ -1,7 +1,8 @@
 use std::f64;
 use std::f32;
 
-mod scalar_ops;
+mod nullable_nullable_ops;
+mod nullable_primitive_ops;
 use traits::TypeDispatchScalar;
 
 #[derive(Debug, PartialEq)]
@@ -37,8 +38,19 @@ macro_rules! impl_from_never_nullable {
         }
     }
 }
-macro_dispatch!(impl_from_never_nullable, i64, i32, i16, i8, isize,
-                u64, u32, u16, u8, usize, bool, String);
+macro_dispatch!(impl_from_never_nullable,
+                i64,
+                i32,
+                i16,
+                i8,
+                isize,
+                u64,
+                u32,
+                u16,
+                u8,
+                usize,
+                bool,
+                String);
 
 macro_rules! impl_from_nullable {
     ($t:ident) => {

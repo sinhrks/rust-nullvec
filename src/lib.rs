@@ -19,30 +19,30 @@ mod traits;
 
 
 
-/*
-- Ops ToDo
-  - Null + Null
-  - Null + primitive
-  - Null + Nullable
-  - Null + NullVec
-
-  - Nullable + Null
-  - Nullable + primitive
-  - Nullable + Nullable
-  - Nullable + NullVec
-
-  - NullVec + Null
-  - NullVec + primitive
-  - NullVec + Nullable
-  - NullVec + NullVec
-
-- Conversion ToDo
-
-  - float and Null
-  - Nullable and Null
-
-  - vec and NullVec
-
-- ToDo:
-  - Add array and scalar
- */
+// - Ops ToDo
+// - Null + Null
+// - Null + primitive
+// - Null + Nullable
+// - Null + NullVec
+//
+// - Nullable + Null
+// - Nullable + primitive (done)
+// - Nullable + Nullable (done)
+// - Nullable + NullVec
+//
+// - NullVec + Null
+// - NullVec + primitive (done)
+// - NullVec + Nullable (done)
+// - NullVec + Vec (done)
+// - NullVec + NullVec (done)
+//
+// - Conversion ToDo
+//
+// - float and Null
+// - Nullable and Null
+//
+// - vec and NullVec
+//
+// - ToDo:
+// - Add array and scalar
+//
