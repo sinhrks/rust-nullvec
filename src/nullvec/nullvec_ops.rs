@@ -1,26 +1,5 @@
 use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 
-// ToDo: remove
-macro_rules! dispatch {
-    ($m:ident) => {
-        $m!(i64);
-        $m!(i32);
-        $m!(i16);
-        $m!(i8);
-        $m!(isize);
-        $m!(u64);
-        $m!(u32);
-        $m!(u16);
-        $m!(u8);
-        $m!(usize);
-        // $m!(bool);
-        // $m!(String);
-
-        $m!(f64);
-        $m!(f32);
-    }
-}
-
 use nullvec::NullVec;
 use vec_ops::Elemwise;
 use traits::TypeDispatch;
@@ -46,7 +25,8 @@ macro_rules! add_broadcast_op_patterns {
         add_broadcast_op!($t, Add, add, +);
     }
 }
-dispatch!(add_broadcast_op_patterns);
+macro_dispatch!(add_broadcast_op_patterns, i64, i32, i16, i8, isize,
+                u64, u32, u16, u8, usize, f64, f32);
 
 
 #[cfg(test)]

@@ -2,28 +2,6 @@ use std::f64;
 use std::f32;
 
 mod scalar_ops;
-
-#[macro_use]
-use macros;
-
-// temp, remove
-macro_rules! dispatch {
-    ($m:ident) => {
-        $m!(i64);
-        $m!(i32);
-        $m!(i16);
-        $m!(i8);
-        $m!(isize);
-        $m!(u64);
-        $m!(u32);
-        $m!(u16);
-        $m!(u8);
-        $m!(usize);
-        $m!(bool);
-        $m!(String);
-    }
-}
-
 use traits::TypeDispatchScalar;
 
 #[derive(Debug, PartialEq)]
@@ -59,7 +37,8 @@ macro_rules! impl_from_never_nullable {
         }
     }
 }
-dispatch!(impl_from_never_nullable);
+macro_dispatch!(impl_from_never_nullable, i64, i32, i16, i8, isize,
+                u64, u32, u16, u8, usize, bool, String);
 
 macro_rules! impl_from_nullable {
     ($t:ident) => {
@@ -84,8 +63,7 @@ macro_rules! impl_from_nullable {
         }
     }
 }
-impl_from_nullable!(f64);
-impl_from_nullable!(f32);
+macro_dispatch!(impl_from_nullable, f64, f32);
 
 // Eq
 

@@ -4,29 +4,7 @@ use num::Float;
 
 mod nullvec_impl;
 mod nullvec_ops;
-
-#[macro_use]
-use macros;
 use vec_ops::Elemwise;
-
-// temp, remove
-macro_rules! dispatch {
-    ($m:ident) => {
-        $m!(i64);
-        $m!(i32);
-        $m!(i16);
-        $m!(i8);
-        $m!(isize);
-        $m!(u64);
-        $m!(u32);
-        $m!(u16);
-        $m!(u8);
-        $m!(usize);
-        $m!(bool);
-        $m!(String);
-    }
-}
-
 use traits::TypeDispatch;
 
 pub struct NullVec<T> {
@@ -55,8 +33,8 @@ macro_rules! impl_new_never_nullable {
         }
     }
 }
-dispatch!(impl_new_never_nullable);
-
+macro_dispatch!(impl_new_never_nullable, i64, i32, i16, i8, isize,
+                u64, u32, u16, u8, usize, bool, String);
 
 fn maybe_null<T: Float>(values: Vec<T>) -> (Vec<T>, Option<Vec<bool>>) {
 
@@ -113,8 +91,7 @@ macro_rules! impl_new_nullable {
         }
     }
 }
-impl_new_nullable!(f64);
-impl_new_nullable!(f32);
+macro_dispatch!(impl_new_nullable, f64, f32);
 
 #[cfg(test)]
 mod tests {
