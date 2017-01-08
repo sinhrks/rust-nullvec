@@ -4,8 +4,6 @@ extern crate num;
 #[macro_use]
 mod macros;
 
-// Null singleton
-mod null;
 // Nullable container
 mod nullvec;
 // Nullable scalar

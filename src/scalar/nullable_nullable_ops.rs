@@ -1,7 +1,6 @@
 use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 
 use scalar::Nullable;
-use traits::TypeDispatchScalar;
 
 macro_rules! add_nullable_op {
     ($t:ident, $tr:ident, $op:ident) => {
@@ -9,10 +8,9 @@ macro_rules! add_nullable_op {
         impl $tr<Nullable<$t>> for Nullable<$t> {
             type Output = Nullable<$t>;
             fn $op(self, other: Nullable<$t>) -> Nullable<$t> {
-                match (self, other) {
-                    (Nullable::Null, _) => Nullable::Null,
-                    (_, Nullable::Null) => Nullable::Null,
-                    (Nullable::Value(v1), Nullable::Value(v2)) => Nullable::new(v1.$op(v2))
+                match other {
+                    Nullable::Null => Nullable::Null,
+                    Nullable::Value(v2) => self.$op(v2)
                 }
             }
         }
@@ -20,25 +18,19 @@ macro_rules! add_nullable_op {
         impl<'a> $tr<&'a Nullable<$t>> for Nullable<$t> {
             type Output = Nullable<$t>;
             fn $op(self, other: &'a Nullable<$t>) -> Nullable<$t> {
-                match (self, other) {
-                    (Nullable::Null, _) => Nullable::Null,
-                    (_, &Nullable::Null) => Nullable::Null,
-                    (Nullable::Value(ref v1), &Nullable::Value(ref v2)) => {
-                        Nullable::new(v1.$op(*v2))
-                    }
-                }
+            match other {
+                &Nullable::Null => Nullable::Null,
+                &Nullable::Value(ref v2) => self.$op(v2)
+            }
             }
         }
         // &Nullable + Nullable
         impl<'b> $tr<Nullable<$t>> for &'b Nullable<$t> {
             type Output = Nullable<$t>;
             fn $op(self, other: Nullable<$t>) -> Nullable<$t> {
-                match (self, other) {
-                    (&Nullable::Null, _) => Nullable::Null,
-                    (_, Nullable::Null) => Nullable::Null,
-                    (&Nullable::Value(ref v1), Nullable::Value(ref v2)) => {
-                        Nullable::new(v1.$op(*v2))
-                    }
+                match other {
+                    Nullable::Null => Nullable::Null,
+                    Nullable::Value(v2) => self.$op(v2)
                 }
             }
         }
@@ -46,12 +38,9 @@ macro_rules! add_nullable_op {
         impl<'a, 'b> $tr<&'a Nullable<$t>> for &'b Nullable<$t> {
             type Output = Nullable<$t>;
             fn $op(self, other: &'a Nullable<$t>) -> Nullable<$t> {
-                match (self, other) {
-                    (&Nullable::Null, _) => Nullable::Null,
-                    (_, &Nullable::Null) => Nullable::Null,
-                    (&Nullable::Value(ref v1), &Nullable::Value(ref v2)) => {
-                        Nullable::new(v1.$op(*v2))
-                    }
+                match other {
+                    &Nullable::Null => Nullable::Null,
+                    &Nullable::Value(ref v2) => self.$op(v2)
                 }
             }
         }
