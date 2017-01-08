@@ -3,7 +3,7 @@ use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 use nullvec::NullVec;
 use scalar::Nullable;
 use vec_ops::Elemwise;
-use traits::TypeDispatch;
+
 
 macro_rules! add_nullable_broadcast_op {
     ($t:ident, $tr:ident, $op:ident, $sym:tt) => {
@@ -100,7 +100,7 @@ mod tests {
 
     use nullvec::NullVec;
     use scalar::Nullable;
-    use traits::TypeDispatch;
+    use traits::TypeDispatchVec;
 
     #[test]
     fn test_int() {

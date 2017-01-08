@@ -15,22 +15,18 @@ mod scalar;
 mod vec_ops;
 mod traits;
 
+pub mod prelude;
+
 
 
 
 
 // - Ops ToDo
-// - Null + Null
-// - Null + primitive
-// - Null + Nullable
-// - Null + NullVec
 //
-// - Nullable + Null
 // - Nullable + primitive (done)
 // - Nullable + Nullable (done)
 // - Nullable + NullVec
 //
-// - NullVec + Null
 // - NullVec + primitive (done)
 // - NullVec + Nullable (done)
 // - NullVec + Vec (done)

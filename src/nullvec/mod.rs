@@ -13,7 +13,7 @@ mod nullvec_vec_ops;
 mod nullvec_nullvec_ops;
 
 use vec_ops::Elemwise;
-use traits::TypeDispatch;
+use traits::TypeDispatchVec;
 
 pub struct NullVec<T> {
     data: Vec<T>,
@@ -24,7 +24,7 @@ pub struct NullVec<T> {
 
 macro_rules! impl_new_never_nullable {
     ($t:ident) => {
-        impl TypeDispatch<$t> for NullVec<$t> {
+        impl TypeDispatchVec<$t> for NullVec<$t> {
             fn new(values: Vec<$t>) -> Self {
                 NullVec {
                     data: values,
@@ -80,7 +80,7 @@ fn maybe_null<T: Float>(values: Vec<T>) -> (Vec<T>, Option<Vec<bool>>) {
 
 macro_rules! impl_new_nullable {
     ($t:ident) => {
-        impl TypeDispatch<$t> for NullVec<$t> {
+        impl TypeDispatchVec<$t> for NullVec<$t> {
             fn new(values: Vec<$t>) -> Self {
                 let (not_null, mask) = maybe_null(values);
 
@@ -118,7 +118,7 @@ mod tests {
     use std::f64;
 
     use super::{NullVec, maybe_null};
-    use traits::TypeDispatch;
+    use traits::TypeDispatchVec;
 
     #[test]
     fn test_int() {

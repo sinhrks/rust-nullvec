@@ -3,7 +3,6 @@ use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 use scalar::Nullable;
 use traits::TypeDispatchScalar;
 
-
 macro_rules! add_nullable_op {
     ($t:ident, $tr:ident, $op:ident) => {
         // Nullable + Nullable

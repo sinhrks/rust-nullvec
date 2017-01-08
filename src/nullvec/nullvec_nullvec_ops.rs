@@ -2,7 +2,7 @@ use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 
 use nullvec::NullVec;
 use vec_ops::Elemwise;
-use traits::TypeDispatch;
+use traits::TypeDispatchVec;
 
 fn get_new_mask(x: &Option<Vec<bool>>, y: &Option<Vec<bool>>) -> Option<Vec<bool>> {
     match (x, y) {
@@ -105,7 +105,7 @@ mod tests {
     use std::f64;
 
     use nullvec::NullVec;
-    use traits::TypeDispatch;
+    use traits::TypeDispatchVec;
 
     #[test]
     fn test_int() {

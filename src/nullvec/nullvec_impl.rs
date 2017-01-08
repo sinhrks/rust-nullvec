@@ -93,7 +93,7 @@ mod tests {
     use std::f64;
 
     use nullvec::NullVec;
-    use traits::TypeDispatch;
+    use traits::TypeDispatchVec;
 
     #[test]
     fn test_int_isnull() {
