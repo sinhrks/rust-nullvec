@@ -7,6 +7,9 @@ mod nullvec_impl;
 // aggregation
 mod nullvec_aggregation;
 
+// iterator
+mod nullvec_iter;
+
 // broadcast op
 mod nullvec_primitive_ops;
 mod nullvec_nullable_ops;
@@ -18,12 +21,12 @@ mod nullvec_nullvec_ops;
 use algos::vec_ops::Elemwise;
 use traits::VecBase;
 
+#[derive(Clone, Debug, PartialEq)]
 pub struct NullVec<T: Clone> {
     data: Vec<T>,
     // ToDo: use BitVec
     mask: Option<Vec<bool>>,
 }
-
 
 macro_rules! impl_new_never_nullable {
     ($t:ident) => {

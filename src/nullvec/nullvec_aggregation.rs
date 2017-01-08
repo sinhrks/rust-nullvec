@@ -14,26 +14,18 @@ impl<T> BasicAggregation for NullVec<T>
 
     fn sum(&self) -> Self::Kept {
         let mut sum = T::zero();
-        match self.mask {
-            Some(ref mask) => {
-                let mut has_value = false;
-                for (m, v) in mask.iter().zip(self.data.iter()) {
-                    if *m == false {
-                        sum = sum + v.clone();
-                        has_value = true;
-                    }
-                }
-                if has_value == true {
-                    Nullable::Value(sum)
-                } else {
-                    Nullable::Null
-                }
+        if self.len() == 0 {
+            Nullable::Value(sum)
+        } else {
+            let mut has_value = false;
+            for v in self.iter_not_null() {
+                sum = sum + v.clone();
+                has_value = true;
             }
-            None => {
-                for v in self.data.iter() {
-                    sum = sum + v.clone();
-                }
+            if has_value == true {
                 Nullable::Value(sum)
+            } else {
+                Nullable::Null
             }
         }
     }
@@ -42,7 +34,7 @@ impl<T> BasicAggregation for NullVec<T>
         let mut count = 0usize;
         match self.mask {
             Some(ref mask) => {
-                for _ in mask.iter().filter(|&m| *m == false) {
+                for _ in self.iter_not_null() {
                     count += 1;
                 }
                 count
@@ -128,39 +120,17 @@ impl<T: Clone + PartialOrd> ComparisonAggregation for NullVec<T> {
         if self.len() == 0 {
             Nullable::Null
         } else {
-            // ToDo: simplify, use iter_not_null?
-            match self.mask {
-                Some(ref mask) => {
-                    let mut it = self.data
-                        .iter()
-                        .zip(mask.iter())
-                        .filter(|&(_, &m)| m == false)
-                        .map(|(v, _)| v.clone());
-                    // get first element
-                    let mut current: T = match it.next() {
-                        Some(val) => val,
-                        None => return Nullable::Null,
-                    };
-                    for v in it {
-                        if v < current {
-                            current = v;
-                        }
-                    }
-                    Nullable::Value(current)
-                }
-                None => {
-                    let mut current = match unsafe { self.iloc_unchecked(&0) } {
-                        Nullable::Value(val) => val,
-                        Nullable::Null => return Nullable::Null,
-                    };
-                    for v in self.data.iter().skip(1).cloned() {
-                        if v < current {
-                            current = v;
-                        }
-                    }
-                    Nullable::Value(current)
+            let mut it = self.iter_not_null().cloned();
+            let mut current: T = match it.next() {
+                Some(val) => val,
+                None => return Nullable::Null,
+            };
+            for v in it {
+                if v < current {
+                    current = v;
                 }
             }
+            Nullable::Value(current)
         }
     }
 
@@ -168,39 +138,17 @@ impl<T: Clone + PartialOrd> ComparisonAggregation for NullVec<T> {
         if self.len() == 0 {
             Nullable::Null
         } else {
-            // ToDo: simplify, use iter_not_null?
-            match self.mask {
-                Some(ref mask) => {
-                    let mut it = self.data
-                        .iter()
-                        .zip(mask.iter())
-                        .filter(|&(_, &m)| m == false)
-                        .map(|(v, _)| v.clone());
-                    // get first element
-                    let mut current: T = match it.next() {
-                        Some(val) => val,
-                        None => return Nullable::Null,
-                    };
-                    for v in it {
-                        if v > current {
-                            current = v;
-                        }
-                    }
-                    Nullable::Value(current)
-                }
-                None => {
-                    let mut current = match unsafe { self.iloc_unchecked(&0) } {
-                        Nullable::Value(val) => val,
-                        Nullable::Null => return Nullable::Null,
-                    };
-                    for v in self.data.iter().skip(1).cloned() {
-                        if v > current {
-                            current = v;
-                        }
-                    }
-                    Nullable::Value(current)
+            let mut it = self.iter_not_null().cloned();
+            let mut current: T = match it.next() {
+                Some(val) => val,
+                None => return Nullable::Null,
+            };
+            for v in it {
+                if v > current {
+                    current = v;
                 }
             }
+            Nullable::Value(current)
         }
     }
 }

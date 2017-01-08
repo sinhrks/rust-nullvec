@@ -45,14 +45,6 @@ impl<T: Clone> NullVec<T> {
     }
 }
 
-impl<T: Clone> Clone for NullVec<T> {
-    fn clone(&self) -> Self {
-        NullVec {
-            data: self.data.clone(),
-            mask: self.mask.clone(),
-        }
-    }
-}
 
 impl<T: Clone> NullVec<T> {
     /// Returns NullVec which has the same length as the caller
