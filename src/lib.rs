@@ -7,17 +7,13 @@ mod macros;
 // Nullable container
 mod nullvec;
 // Nullable scalar
-mod scalar;
+mod nullable;
 
 // common
 mod vec_ops;
 mod traits;
 
 pub mod prelude;
-
-
-
-
 
 // - Ops ToDo
 //

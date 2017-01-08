@@ -1,8 +1,7 @@
 use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 
 use nullvec::NullVec;
-use scalar::Nullable;
-use vec_ops::Elemwise;
+use nullable::Nullable;
 
 
 macro_rules! add_nullable_broadcast_op {
@@ -13,6 +12,7 @@ macro_rules! add_nullable_broadcast_op {
             fn $op(self, other: Nullable<$t>) -> NullVec<$t> {
                 match other {
                     Nullable::Null => self.as_null(),
+                    // call Nulvec + primitive op
                     Nullable::Value(val) => self $sym val
                 }
             }
@@ -99,7 +99,7 @@ mod tests {
     use std::f64;
 
     use nullvec::NullVec;
-    use scalar::Nullable;
+    use nullable::Nullable;
     use traits::TypeDispatchVec;
 
     #[test]

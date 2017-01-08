@@ -1,6 +1,6 @@
 use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 
-use scalar::Nullable;
+use nullable::Nullable;
 
 macro_rules! add_nullable_op {
     ($t:ident, $tr:ident, $op:ident) => {
@@ -10,6 +10,7 @@ macro_rules! add_nullable_op {
             fn $op(self, other: Nullable<$t>) -> Nullable<$t> {
                 match other {
                     Nullable::Null => Nullable::Null,
+                    // call nullable + primitive op
                     Nullable::Value(v2) => self.$op(v2)
                 }
             }
@@ -95,7 +96,7 @@ macro_dispatch!(add_nullable_bitwise_op_patterns,
 #[cfg(test)]
 mod tests {
 
-    use scalar::Nullable;
+    use nullable::Nullable;
 
     #[test]
     fn test_int_ops_add_nullable() {

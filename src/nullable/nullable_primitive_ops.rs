@@ -1,6 +1,6 @@
 use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 
-use scalar::Nullable;
+use nullable::Nullable;
 use traits::TypeDispatchScalar;
 
 macro_rules! add_primitive_op {
@@ -95,7 +95,7 @@ macro_dispatch!(add_primitive_bitwise_op_patterns,
 #[cfg(test)]
 mod tests {
 
-    use scalar::Nullable;
+    use nullable::Nullable;
 
     #[test]
     fn test_int_arithmetic_ops_add_primitive() {

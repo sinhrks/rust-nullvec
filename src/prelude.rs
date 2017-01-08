@@ -1,6 +1,6 @@
 
 pub use nullvec::NullVec;
-pub use scalar::Nullable;
-pub use scalar::Nullable::Null;
+pub use nullable::Nullable;
+pub use nullable::Nullable::Null;
 
 pub use traits::{TypeDispatchScalar, TypeDispatchVec};
