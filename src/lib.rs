@@ -10,7 +10,7 @@ mod nullvec;
 mod nullable;
 
 // common
-mod vec_ops;
+mod algos;
 mod traits;
 
 pub mod prelude;

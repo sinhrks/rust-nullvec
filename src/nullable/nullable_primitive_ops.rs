@@ -1,7 +1,7 @@
 use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 
 use nullable::Nullable;
-use traits::TypeDispatchScalar;
+use traits::ScalarBase;
 
 macro_rules! add_primitive_op {
     ($t:ident, $tr:ident, $op:ident) => {

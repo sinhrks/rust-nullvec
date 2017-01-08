@@ -4,6 +4,9 @@ use num::Float;
 
 mod nullvec_impl;
 
+// aggregation
+mod nullvec_aggregation;
+
 // broadcast op
 mod nullvec_primitive_ops;
 mod nullvec_nullable_ops;
@@ -12,10 +15,10 @@ mod nullvec_nullable_ops;
 mod nullvec_vec_ops;
 mod nullvec_nullvec_ops;
 
-use vec_ops::Elemwise;
-use traits::TypeDispatchVec;
+use algos::vec_ops::Elemwise;
+use traits::VecBase;
 
-pub struct NullVec<T> {
+pub struct NullVec<T: Clone> {
     data: Vec<T>,
     // ToDo: use BitVec
     mask: Option<Vec<bool>>,
@@ -24,7 +27,7 @@ pub struct NullVec<T> {
 
 macro_rules! impl_new_never_nullable {
     ($t:ident) => {
-        impl TypeDispatchVec<$t> for NullVec<$t> {
+        impl VecBase<$t> for NullVec<$t> {
             fn new(values: Vec<$t>) -> Self {
                 NullVec {
                     data: values,
@@ -80,7 +83,7 @@ fn maybe_null<T: Float>(values: Vec<T>) -> (Vec<T>, Option<Vec<bool>>) {
 
 macro_rules! impl_new_nullable {
     ($t:ident) => {
-        impl TypeDispatchVec<$t> for NullVec<$t> {
+        impl VecBase<$t> for NullVec<$t> {
             fn new(values: Vec<$t>) -> Self {
                 let (not_null, mask) = maybe_null(values);
 
@@ -118,7 +121,7 @@ mod tests {
     use std::f64;
 
     use super::{NullVec, maybe_null};
-    use traits::TypeDispatchVec;
+    use traits::VecBase;
 
     #[test]
     fn test_int() {

@@ -3,7 +3,7 @@ use std::f32;
 
 mod nullable_nullable_ops;
 mod nullable_primitive_ops;
-use traits::TypeDispatchScalar;
+use traits::ScalarBase;
 
 #[derive(Debug, PartialEq)]
 pub enum Nullable<T> {
@@ -11,7 +11,7 @@ pub enum Nullable<T> {
     Null,
 }
 
-impl<T> TypeDispatchScalar<T> for Nullable<T> {
+impl<T> ScalarBase<T> for Nullable<T> {
     fn new(value: T) -> Self {
         Nullable::Value(value)
     }
@@ -86,7 +86,7 @@ mod tests {
 
     use std::f64;
     use super::Nullable;
-    use traits::TypeDispatchScalar;
+    use traits::ScalarBase;
 
     #[test]
     fn test_int() {

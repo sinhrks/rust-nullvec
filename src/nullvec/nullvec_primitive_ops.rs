@@ -1,8 +1,8 @@
 use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 
+use algos::vec_ops::Elemwise;
 use nullvec::NullVec;
-use vec_ops::Elemwise;
-use traits::TypeDispatchVec;
+use traits::VecBase;
 
 macro_rules! add_primitive_broadcast_op {
     ($t:ident, $tr:ident, $op:ident, $sym:tt) => {
@@ -94,7 +94,7 @@ mod tests {
     use std::f64;
 
     use nullvec::NullVec;
-    use traits::TypeDispatchVec;
+    use traits::VecBase;
 
     #[test]
     fn test_int() {

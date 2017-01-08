@@ -100,7 +100,7 @@ mod tests {
 
     use nullvec::NullVec;
     use nullable::Nullable;
-    use traits::TypeDispatchVec;
+    use traits::VecBase;
 
     #[test]
     fn test_int() {
