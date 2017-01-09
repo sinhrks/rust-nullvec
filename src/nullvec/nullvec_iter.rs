@@ -1,11 +1,36 @@
-// use std::iter::{IntoIterator, ExactSizeIterator, FusedIterator, TrustedLen};
-use std::iter::{IntoIterator, ExactSizeIterator};
+use std::iter::{FromIterator, IntoIterator, ExactSizeIterator};
 
 use super::NullVec;
 use nullable::Nullable;
-use traits::Slicer;
+use traits::{NullStorable, Slicer};
 
-impl<T: Clone> NullVec<T> {
+/// /////////////////////////////////////////////////////////////////////////////
+/// Convert from Iterators
+/// /////////////////////////////////////////////////////////////////////////////
+
+impl<T: NullStorable> FromIterator<T> for NullVec<T> {
+    fn from_iter<I>(iter: I) -> Self
+        where I: IntoIterator<Item = T>
+    {
+        let values: Vec<T> = iter.into_iter().collect();
+        NullVec::new(values)
+    }
+}
+
+impl<T: NullStorable> FromIterator<Nullable<T>> for NullVec<T> {
+    fn from_iter<I>(iter: I) -> Self
+        where I: IntoIterator<Item = Nullable<T>>
+    {
+        let values: Vec<Nullable<T>> = iter.into_iter().collect();
+        values.into()
+    }
+}
+
+/// /////////////////////////////////////////////////////////////////////////////
+/// Convert to Iterators
+/// /////////////////////////////////////////////////////////////////////////////
+
+impl<T: Clone + NullStorable> NullVec<T> {
     pub fn iter_raw<'s>(&'s self) -> NullVecRawIter<'s, T> {
         NullVecRawIter {
             data: &self,
@@ -25,7 +50,7 @@ impl<T: Clone> NullVec<T> {
 /// Iterator returns Nullable
 /// /////////////////////////////////////////////////////////////////////////////
 
-impl<T: Clone> IntoIterator for NullVec<T> {
+impl<T: Clone + NullStorable> IntoIterator for NullVec<T> {
     type Item = Nullable<T>;
     type IntoIter = NullVecIntoIter<T>;
 
@@ -37,12 +62,13 @@ impl<T: Clone> IntoIterator for NullVec<T> {
     }
 }
 
-pub struct NullVecIntoIter<T: Clone> {
+#[derive(Clone, Debug)]
+pub struct NullVecIntoIter<T: Clone + NullStorable> {
     data: NullVec<T>,
     current: usize,
 }
 
-impl<T: Clone> Iterator for NullVecIntoIter<T> {
+impl<T: Clone + NullStorable> Iterator for NullVecIntoIter<T> {
     type Item = Nullable<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -63,36 +89,21 @@ impl<T: Clone> Iterator for NullVecIntoIter<T> {
     }
 }
 
-// impl<T: Clone> ç for NullVecIntoIter<T> {
-// fn is_empty(&self) -> bool {
-// self.current == self.data.len()
-// }
-// }
-//
-// impl<T: Clone> FusedIterator for NullVecIntoIter<T> {}
-//
-// unsafe impl<T: Clone> TrustedLen for NullVecIntoIter<T> {}
-//
+// ToDo: FusedIterator and TrustedLen
 
-impl<T: Clone> Clone for NullVecIntoIter<T> {
-    fn clone(&self) -> Self {
-        NullVecIntoIter {
-            data: self.data.clone(),
-            current: self.current,
-        }
-    }
-}
 
 /// /////////////////////////////////////////////////////////////////////////////
 /// Iterator returns raw values
 /// /////////////////////////////////////////////////////////////////////////////
-
-pub struct NullVecRawIter<'a, T: 'a + Clone> {
+#[derive(Clone, Debug)]
+pub struct NullVecRawIter<'a, T: 'a + Clone + NullStorable> {
     data: &'a NullVec<T>,
     current: usize,
 }
 
-impl<'a, T: 'a + Clone> Iterator for NullVecRawIter<'a, T> {
+impl<'a, T> Iterator for NullVecRawIter<'a, T>
+    where T: 'a + Clone + NullStorable
+{
     type Item = (bool, &'a T);
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -123,13 +134,15 @@ impl<'a, T: 'a + Clone> Iterator for NullVecRawIter<'a, T> {
 /// /////////////////////////////////////////////////////////////////////////////
 /// Iterator returns non-null raw values
 /// /////////////////////////////////////////////////////////////////////////////
-
-pub struct NullVecNotNullIter<'a, T: 'a + Clone> {
+#[derive(Clone, Debug)]
+pub struct NullVecNotNullIter<'a, T: 'a + Clone + NullStorable> {
     data: &'a NullVec<T>,
     current: usize,
 }
 
-impl<'a, T: 'a + Clone> Iterator for NullVecNotNullIter<'a, T> {
+impl<'a, T> Iterator for NullVecNotNullIter<'a, T>
+    where T: 'a + Clone + NullStorable
+{
     type Item = &'a T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -171,12 +184,10 @@ impl<'a, T: 'a + Clone> Iterator for NullVecNotNullIter<'a, T> {
 #[cfg(test)]
 mod tests {
 
-    use std::f64;
     use std::iter::IntoIterator;
 
     use nullable::Nullable;
     use nullvec::NullVec;
-    use traits::VecBase;
 
     #[test]
     fn test_into_iter() {

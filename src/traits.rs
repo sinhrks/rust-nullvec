@@ -1,19 +1,25 @@
 
-/// /////////////////////////////////////////////////////////////////////////////
-/// Base for Type Dispatch
-/// /////////////////////////////////////////////////////////////////////////////
+/// Basic trait which must be implemented to primitive types
+/// being stored to Nullable and NullVec
+pub trait NullStorable: Default {
+    /// Whether the primitive value can be null.
+    ///
+    /// If this is `false`, `is_null` never return true.
+    fn has_primitive_null() -> bool {
+        false
+    }
 
-/// Basic trait all nullable scalar-likes must support
-pub trait ScalarBase<T>: Sized {
-    fn new(values: T) -> Self;
-}
+    /// Whether the value should be regarded as null.
+    /// Must be inverse of `is_not_null`.
+    fn is_null(&self) -> bool {
+        false
+    }
 
-/// Basic trait all nullable vector-likes must support
-pub trait VecBase<T>: Sized {
-    fn new(values: Vec<T>) -> Self;
-
-    /// Return the same type filling with all null
-    fn with_mask(values: Vec<T>, mask: Option<Vec<bool>>) -> Self;
+    /// Whether the value should be regarded as null.
+    /// Must be inverse of `is_null`.
+    fn is_not_null(&self) -> bool {
+        true
+    }
 }
 
 /// /////////////////////////////////////////////////////////////////////////////

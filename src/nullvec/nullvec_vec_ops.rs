@@ -2,7 +2,6 @@ use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 
 use algos::vec_ops::Elemwise;
 use nullvec::NullVec;
-use traits::VecBase;
 
 macro_rules! add_vec_elemwise_op {
     ($t:ident, $tr:ident, $op:ident, $sym:tt) => {
@@ -94,7 +93,6 @@ mod tests {
     use std::f64;
 
     use nullvec::NullVec;
-    use traits::VecBase;
 
     #[test]
     fn test_int() {

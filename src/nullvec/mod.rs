@@ -7,6 +7,9 @@ mod nullvec_impl;
 // aggregation
 mod nullvec_aggregation;
 
+// convert
+mod nullvec_convert;
+
 // iterator
 mod nullvec_iter;
 
@@ -19,104 +22,68 @@ mod nullvec_vec_ops;
 mod nullvec_nullvec_ops;
 
 use algos::vec_ops::Elemwise;
-use traits::VecBase;
+use traits::NullStorable;
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct NullVec<T: Clone> {
+pub struct NullVec<T: NullStorable> {
     data: Vec<T>,
     // ToDo: use BitVec
     mask: Option<Vec<bool>>,
 }
 
-macro_rules! impl_new_never_nullable {
-    ($t:ident) => {
-        impl VecBase<$t> for NullVec<$t> {
-            fn new(values: Vec<$t>) -> Self {
-                NullVec {
-                    data: values,
-                    mask: None
-                }
-            }
+fn maybe_null<T: NullStorable>(values: Vec<T>) -> (Vec<T>, Option<Vec<bool>>) {
+    if T::has_primitive_null() {
+        let mut not_null: Vec<T> = Vec::with_capacity(values.len());
+        let mut mask: Vec<bool> = Vec::with_capacity(values.len());
+        let mut has_null = false;
 
-            fn with_mask(values: Vec<$t>, mask: Option<Vec<bool>>) -> Self {
-                NullVec {
-                    data: values,
-                    mask: mask
-                }
+        for v in values.into_iter() {
+            if v.is_null() {
+                not_null.push(T::default());
+                mask.push(true);
+                has_null = true;
+            } else {
+                not_null.push(v);
+                mask.push(false);
             }
         }
-    }
-}
-macro_dispatch!(impl_new_never_nullable,
-                i64,
-                i32,
-                i16,
-                i8,
-                isize,
-                u64,
-                u32,
-                u16,
-                u8,
-                usize,
-                bool,
-                String);
-
-fn maybe_null<T: Float>(values: Vec<T>) -> (Vec<T>, Option<Vec<bool>>) {
-
-    let mut not_null: Vec<T> = Vec::with_capacity(values.len());
-    let mut mask: Vec<bool> = Vec::with_capacity(values.len());
-    let mut has_null = false;
-
-    for v in values.into_iter() {
-        if v.is_nan() {
-            not_null.push(T::zero());
-            mask.push(true);
-            has_null = true;
+        if has_null == true {
+            (not_null, Some(mask))
         } else {
-            not_null.push(v);
-            mask.push(false);
+            (not_null, None)
         }
-    }
-    if has_null == true {
-        (not_null, Some(mask))
     } else {
-        (not_null, None)
+        (values, None)
     }
+
 }
 
-macro_rules! impl_new_nullable {
-    ($t:ident) => {
-        impl VecBase<$t> for NullVec<$t> {
-            fn new(values: Vec<$t>) -> Self {
-                let (not_null, mask) = maybe_null(values);
+impl<T: NullStorable> NullVec<T> {
+    pub fn new(values: Vec<T>) -> Self {
+        let (not_null, mask) = maybe_null(values);
 
-                NullVec {
-                    data: not_null,
-                    mask: mask
-                }
-            }
+        NullVec {
+            data: not_null,
+            mask: mask,
+        }
+    }
 
-            fn with_mask(values: Vec<$t>, mask: Option<Vec<bool>>) -> Self {
-                let (not_null, null_mask) = maybe_null(values);
-                let new_mask = match (null_mask, mask) {
-                    (Some(lmask), Some(rmask)) => Some(Elemwise::elemwise_oo(lmask,
-                                                                             rmask,
-                                                                             |x, y| x | y)),
-                    (Some(lmask), None) => Some(lmask),
-                    (None, Some(rmask)) => Some(rmask),
-                    (None, None) => None
-                };
+    fn with_mask(values: Vec<T>, mask: Option<Vec<bool>>) -> Self {
+        let (not_null, null_mask) = maybe_null(values);
+        let new_mask = match (null_mask, mask) {
+            (Some(lmask), Some(rmask)) => Some(Elemwise::elemwise_oo(lmask, rmask, |x, y| x | y)),
+            (Some(lmask), None) => Some(lmask),
+            (None, Some(rmask)) => Some(rmask),
+            (None, None) => None,
+        };
 
-                NullVec {
-                    data: not_null,
-                    mask: new_mask
-                }
-            }
-
+        NullVec {
+            data: not_null,
+            mask: new_mask,
         }
     }
 }
-macro_dispatch!(impl_new_nullable, f64, f32);
+
 
 #[cfg(test)]
 mod tests {
@@ -124,7 +91,6 @@ mod tests {
     use std::f64;
 
     use super::{NullVec, maybe_null};
-    use traits::VecBase;
 
     #[test]
     fn test_int() {

@@ -1,4 +1,5 @@
 extern crate num;
+extern crate rustc_serialize;
 
 // macro must be defined first to be usable in other modules
 #[macro_use]
@@ -8,6 +9,8 @@ mod macros;
 mod nullvec;
 // Nullable scalar
 mod nullable;
+// Generic types
+mod generic;
 
 // common
 mod algos;

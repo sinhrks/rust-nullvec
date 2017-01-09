@@ -3,7 +3,6 @@ use std::ops::{Add, Sub, Mul, Div, Rem, BitAnd, BitOr, BitXor};
 use nullvec::NullVec;
 use nullable::Nullable;
 
-
 macro_rules! add_nullable_broadcast_op {
     ($t:ident, $tr:ident, $op:ident, $sym:tt) => {
         // Nullvec + Nullable
@@ -100,7 +99,6 @@ mod tests {
 
     use nullvec::NullVec;
     use nullable::Nullable;
-    use traits::VecBase;
 
     #[test]
     fn test_int() {

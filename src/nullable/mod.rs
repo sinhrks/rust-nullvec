@@ -3,35 +3,86 @@ use std::f32;
 
 mod nullable_nullable_ops;
 mod nullable_primitive_ops;
-use traits::ScalarBase;
+use traits::NullStorable;
 
 #[derive(Debug, PartialEq)]
-pub enum Nullable<T> {
+pub enum Nullable<T: NullStorable> {
     Value(T),
     Null,
 }
 
-impl<T> ScalarBase<T> for Nullable<T> {
-    fn new(value: T) -> Self {
-        Nullable::Value(value)
+impl NullStorable for i64 {}
+impl NullStorable for i32 {}
+impl NullStorable for i16 {}
+impl NullStorable for i8 {}
+impl NullStorable for isize {}
+impl NullStorable for u64 {}
+impl NullStorable for u32 {}
+impl NullStorable for u16 {}
+impl NullStorable for u8 {}
+impl NullStorable for usize {}
+impl NullStorable for bool {}
+impl NullStorable for String {}
+impl NullStorable for f64 {
+    fn has_primitive_null() -> bool {
+        true
+    }
+
+    fn is_null(&self) -> bool {
+        self.is_nan()
+    }
+
+    fn is_not_null(&self) -> bool {
+        !self.is_nan()
     }
 }
 
-// conversion
+impl NullStorable for f32 {
+    fn has_primitive_null() -> bool {
+        true
+    }
+
+    fn is_null(&self) -> bool {
+        self.is_nan()
+    }
+
+    fn is_not_null(&self) -> bool {
+        !self.is_nan()
+    }
+}
+
+/// /////////////////////////////////////////////////////////////////////////////
+/// Basic impl
+/// /////////////////////////////////////////////////////////////////////////////
+
+impl<T: NullStorable> Nullable<T> {
+    fn new(value: T) -> Self {
+        if value.is_null() {
+            Nullable::Null
+        } else {
+            Nullable::Value(value)
+        }
+    }
+}
+
+/// /////////////////////////////////////////////////////////////////////////////
+/// Basic conversion
+/// /////////////////////////////////////////////////////////////////////////////
+
+impl<T: NullStorable> From<T> for Nullable<T> {
+    fn from(value: T) -> Self {
+        Nullable::new(value)
+    }
+}
 
 macro_rules! impl_from_never_nullable {
     ($t:ident) => {
-
-        impl From<$t> for Nullable<$t> {
-            fn from(value: $t) -> Self {
-                Nullable::Value(value)
-            }
-        }
 
         impl From<Nullable<$t>> for $t {
             fn from(value: Nullable<$t>) -> $t {
                 match value {
                     Nullable::Value(val) => val,
+                    // ToDo: must be TryFrom
                     _ => panic!("Unable to convert NaN to int")
                 }
             }
@@ -55,16 +106,6 @@ macro_dispatch!(impl_from_never_nullable,
 macro_rules! impl_from_nullable {
     ($t:ident) => {
 
-        impl From<$t> for Nullable<$t> {
-            fn from(value: $t) -> Self {
-                if value.is_nan() {
-                    Nullable::Null
-                } else {
-                    Nullable::Value(value)
-                }
-            }
-        }
-
         impl From<Nullable<$t>> for $t {
             fn from(value: Nullable<$t>) -> $t {
                 match value {
@@ -79,14 +120,13 @@ macro_dispatch!(impl_from_nullable, f64, f32);
 
 // Eq
 
-impl<T> Eq for Nullable<T> where T: Eq {}
+impl<T: NullStorable> Eq for Nullable<T> where T: Eq {}
 
 #[cfg(test)]
 mod tests {
 
     use std::f64;
     use super::Nullable;
-    use traits::ScalarBase;
 
     #[test]
     fn test_int() {
@@ -94,6 +134,17 @@ mod tests {
         let i2 = Nullable::new(3);
         assert_eq!(i1, i1);
         assert_eq!(i1, i2);
+        assert_eq!(i1, Nullable::new(3));
+
+        assert!(i1 != Nullable::Null);
+    }
+
+    #[test]
+    fn test_float() {
+        let i1 = Nullable::new(1.1);
+        let i2 = Nullable::new(f64::NAN);
+        assert_eq!(i1, Nullable::Value(1.1));
+        assert_eq!(i2, Nullable::Null);
     }
 
     #[test]

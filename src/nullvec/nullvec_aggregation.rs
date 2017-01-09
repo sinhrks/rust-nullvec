@@ -3,11 +3,11 @@ use std::ops::{Add, Sub, Div};
 
 use super::NullVec;
 use nullable::Nullable;
-use traits::{Slicer, BasicAggregation, NumericAggregation, ComparisonAggregation};
+use traits::{NullStorable, Slicer, BasicAggregation, NumericAggregation, ComparisonAggregation};
 
 
 impl<T> BasicAggregation for NullVec<T>
-    where T: Clone + Zero + Add
+    where T: Clone + Zero + Add + NullStorable
 {
     type Kept = Nullable<T>;
     type Counted = usize;
@@ -59,7 +59,7 @@ fn mean_sq<T>(not_null: Vec<T>) -> f64
 
 
 impl<T> NumericAggregation for NullVec<T>
-    where T: Clone + Zero + Add + Sub + Div + ToPrimitive
+    where T: Clone + Zero + Add + Sub + Div + ToPrimitive + NullStorable
 {
     type Coerced = Nullable<f64>;
 
@@ -113,7 +113,9 @@ impl<T> NumericAggregation for NullVec<T>
     }
 }
 
-impl<T: Clone + PartialOrd> ComparisonAggregation for NullVec<T> {
+impl<T> ComparisonAggregation for NullVec<T>
+    where T: Clone + PartialOrd + NullStorable
+{
     type Kept = Nullable<T>;
 
     fn min(&self) -> Self::Kept {
@@ -160,7 +162,7 @@ mod tests {
 
     use nullable::Nullable;
     use nullvec::NullVec;
-    use traits::{VecBase, Slicer, BasicAggregation, NumericAggregation, ComparisonAggregation};
+    use traits::{Slicer, BasicAggregation, NumericAggregation, ComparisonAggregation};
 
     #[test]
     fn test_sum() {

@@ -5,9 +5,9 @@ use algos::indexing::Indexing;
 
 use super::NullVec;
 use nullable::Nullable;
-use traits::Slicer;
+use traits::{NullStorable, Slicer};
 
-impl<T: Clone> NullVec<T> {
+impl<T: Clone + NullStorable> NullVec<T> {
     pub fn has_null(&self) -> bool {
         match self.mask {
             Some(_) => true,
@@ -46,7 +46,7 @@ impl<T: Clone> NullVec<T> {
 }
 
 
-impl<T: Clone> NullVec<T> {
+impl<T: Clone + NullStorable> NullVec<T> {
     /// Returns NullVec which has the same length as the caller
     /// whose values are all Null
     pub fn as_null(&self) -> Self {
@@ -92,7 +92,7 @@ impl<T: Clone> NullVec<T> {
     }
 }
 
-impl<T: Clone> Slicer for NullVec<T> {
+impl<T: Clone + NullStorable> Slicer for NullVec<T> {
     type Scalar = Nullable<T>;
 
     fn len(&self) -> usize {
@@ -140,17 +140,12 @@ impl<T: Clone> Slicer for NullVec<T> {
         // check whether result have null
         let mut has_null = false;
 
-        // ToDo: case to handle length is 0
-        if self.len() == 0 {
-            unimplemented!();
-        }
-
         match self.mask {
             Some(ref mask) => {
                 for loc in locations.iter() {
                     if *loc >= self.len() {
 
-                        new_data.push((&self.data[0]).clone());
+                        new_data.push(T::default());
                         new_mask.push(true);
                         has_null = true;
                     } else {
@@ -167,7 +162,7 @@ impl<T: Clone> Slicer for NullVec<T> {
             None => {
                 for loc in locations.iter() {
                     if *loc >= self.len() {
-                        new_data.push((&self.data[0]).clone());
+                        new_data.push(T::default());
                         new_mask.push(true);
                         has_null = true;
                     } else {
@@ -211,7 +206,7 @@ mod tests {
 
     use nullable::Nullable;
     use nullvec::NullVec;
-    use traits::{VecBase, Slicer};
+    use traits::Slicer;
 
     #[test]
     fn test_int_isnull() {
@@ -422,7 +417,7 @@ mod tests {
         assert_eq!(res.mask, None);
 
         let res = nvec.ilocs_forced(&vec![5, 1]);
-        assert_eq!(res.data, vec![1, 2]);
+        assert_eq!(res.data, vec![0, 2]);
         assert_eq!(res.mask, Some(vec![true, false]));
 
         let values: Vec<usize> = vec![1, 2, 3];
@@ -436,12 +431,21 @@ mod tests {
         assert_eq!(res.mask, None);
 
         let res = nvec.ilocs_forced(&vec![10, 10]);
-        assert_eq!(res.data, vec![1, 1]);
+        assert_eq!(res.data, vec![0, 0]);
         assert_eq!(res.mask, Some(vec![true, true]));
 
         // select with slice
         let res = nvec.ilocs_forced(&vec![2, 1]);
         assert_eq!(res.data, vec![3, 2]);
         assert_eq!(res.mask, Some(vec![true, false]));
+    }
+
+    #[test]
+    fn test_ilocs_forced_empty() {
+        let values: Vec<usize> = vec![];
+        let nvec = NullVec::new(values);
+        let res = nvec.ilocs_forced(&vec![2, 1]);
+        assert_eq!(res.data, vec![0, 0]);
+        assert_eq!(res.mask, Some(vec![true, true]));
     }
 }

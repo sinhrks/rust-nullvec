@@ -5,3 +5,4 @@ authors = ["sinhrks <sinhrks@gmail.com>"]
 
 [dependencies]
 num = "0.1.36"
+rustc-serialize = "0.3.21"
