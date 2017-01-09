@@ -2,6 +2,10 @@
 name = "nullvec"
 version = "0.1.0"
 authors = ["sinhrks <sinhrks@gmail.com>"]
+license = "BSD-3-Clause"
+readme = "README.md"
+description = "Rust nullable vector, which can contain null(missing) values as element"
+keywords = [ "Nan", "Null", "Missing", "Masked", "Vec"]
 
 [dependencies]
 num = "0.1.36"
