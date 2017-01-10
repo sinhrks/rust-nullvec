@@ -15,7 +15,15 @@ impl<T: Clone + NullStorable> NullVec<T> {
         }
     }
 
-    /// Returns bool Vec whether the collesponding value is Null or not
+    /// Returns `Vec<bool>` whether the collesponding value is `Null`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use nullvec::prelude::*;
+    /// let v = NullVec::with_mask(vec![1, 2, 3], Some(vec![false, true, false]));
+    /// assert_eq!(v.is_null(), vec![false, true, false]);
+    /// ```
     pub fn is_null(&self) -> Vec<bool> {
         match self.mask {
             Some(ref mask) => mask.clone(),
@@ -23,6 +31,15 @@ impl<T: Clone + NullStorable> NullVec<T> {
         }
     }
 
+    /// Returns `Vec<bool>` whether the collesponding value is not `Null`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use nullvec::prelude::*;
+    /// let v = NullVec::with_mask(vec![1, 2, 3], Some(vec![false, true, false]));
+    /// assert_eq!(v.not_null(), vec![true, false, true]);
+    /// ```
     pub fn not_null(&self) -> Vec<bool> {
         match self.mask {
             Some(ref mask) => mask.iter().map(|x| !x).collect::<Vec<bool>>(),
@@ -30,6 +47,15 @@ impl<T: Clone + NullStorable> NullVec<T> {
         }
     }
 
+    /// Returns `Vec<T>` of values which is not `Null`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use nullvec::prelude::*;
+    /// let v = NullVec::with_mask(vec![1, 2, 3], Some(vec![false, true, false]));
+    /// assert_eq!(v.not_null_values(), vec![1, 3]);
+    /// ```
     pub fn not_null_values(&self) -> Vec<T> {
         match self.mask {
             Some(ref mask) => {
@@ -47,8 +73,16 @@ impl<T: Clone + NullStorable> NullVec<T> {
 
 
 impl<T: Clone + NullStorable> NullVec<T> {
-    /// Returns NullVec which has the same length as the caller
-    /// whose values are all Null
+    /// Returns `NullVec<T>`` which has the same length as the caller
+    /// whose values are all `Null`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use nullvec::prelude::*;
+    /// let v = NullVec::new(vec![1, 2, 3]);
+    /// assert_eq!(v.as_null().is_null(), vec![true, true, true]);
+    /// ```
     pub fn as_null(&self) -> Self {
         NullVec {
             data: self.data.clone(),
@@ -56,7 +90,17 @@ impl<T: Clone + NullStorable> NullVec<T> {
         }
     }
 
+    /// Returns `NullVec<T>` of not `Null` values.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use nullvec::prelude::*;
+    /// let v = NullVec::with_mask(vec![1, 2, 3], Some(vec![false, true, false]));
+    /// assert_eq!(v.drop_null(), NullVec::new(vec![1, 3]));
+    /// ```
     pub fn drop_null(&self) -> Self {
+        // ToDo: merge with not_null_values?
         match &self.mask {
             &Some(ref mask) => {
                 let new_values: Vec<T> = mask.iter()
@@ -74,6 +118,15 @@ impl<T: Clone + NullStorable> NullVec<T> {
         }
     }
 
+    /// Returns `NullVec<T>` filling `Null` with specified value.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use nullvec::prelude::*;
+    /// let v = NullVec::with_mask(vec![1, 2, 3], Some(vec![false, true, false]));
+    /// assert_eq!(v.fill_null(5), NullVec::new(vec![1, 5, 3]));
+    /// ```
     pub fn fill_null(&self, value: T) -> Self {
         match &self.mask {
             &Some(ref mask) => {

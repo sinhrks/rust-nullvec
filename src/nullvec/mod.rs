@@ -1,5 +1,18 @@
-// use std::collections::BitVec;
+//! Nullable `Vec` which can contains specified type `T` and `Null`.
+//!
+//! # Examples
+//!
+//! ```
+//! use nullvec::prelude::*;
+//! let v = NullVec::new(vec![1, 2, 3]);
+//! assert_eq!(v.is_null(), vec![false, false, false]);
+//!
+//! // masked values are regarded as Null
+//! let v = NullVec::with_mask(vec![1, 2, 3], Some(vec![true, false, true]));
+//! assert_eq!(v.is_null(), vec![true, false, true]);
+//! ```
 
+// use std::collections::BitVec;
 use num::Float;
 
 mod nullvec_impl;
@@ -24,6 +37,7 @@ mod nullvec_nullvec_ops;
 use algos::vec_ops::Elemwise;
 use traits::NullStorable;
 
+/// Nullable Vector
 #[derive(Clone, Debug, PartialEq)]
 pub struct NullVec<T: NullStorable> {
     data: Vec<T>,
@@ -59,6 +73,25 @@ fn maybe_null<T: NullStorable>(values: Vec<T>) -> (Vec<T>, Option<Vec<bool>>) {
 }
 
 impl<T: NullStorable> NullVec<T> {
+
+    /// Create new `NullVec<T>` from `Vec<T>`.
+    ///
+    /// Float `NAN` is automatically replaced to `Null`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::f64;
+    /// use nullvec::prelude::*;
+    ///
+    /// // regarded as [1, 2, 3]
+    /// let nv = NullVec::new(vec![1, 2, 3]);
+    /// assert_eq!(nv.is_null(), vec![false, false, false]);
+    ///
+    /// // regarded as [1, NULL, 3]
+    /// let nv = NullVec::new(vec![1., f64::NAN, 3.]);
+    /// assert_eq!(nv.is_null(), vec![false, true, false]);
+    /// ```
     pub fn new(values: Vec<T>) -> Self {
         let (not_null, mask) = maybe_null(values);
 
@@ -68,7 +101,30 @@ impl<T: NullStorable> NullVec<T> {
         }
     }
 
-    fn with_mask(values: Vec<T>, mask: Option<Vec<bool>>) -> Self {
+    /// Create new `NullVec<T>` from `Vec<T>` and mask.
+    ///
+    /// # Parameters
+    ///
+    /// * `values` - Values of `NullVec<T>`.
+    /// * `mask` - Mask whether to be corresponding element should be regarded as `Null`.
+    ///   If mask is `true`, `values` of corresponding location is ignored and internally
+    ///   replaced to `Null`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::f64;
+    /// use nullvec::prelude::*;
+    ///
+    /// // regarded as [NULL, 2, NULL]
+    /// let nv = NullVec::with_mask(vec![1, 2, 3], Some(vec![true, false, true]));
+    /// assert_eq!(nv.is_null(), vec![true, false, true]);
+    ///
+    /// // regarded as [1., NULL, NULL]
+    /// let nv = NullVec::with_mask(vec![1., f64::NAN, 3.], Some(vec![false, false, true]));
+    /// assert_eq!(nv.is_null(), vec![false, true, true]);
+    /// ```
+    pub fn with_mask(values: Vec<T>, mask: Option<Vec<bool>>) -> Self {
         let (not_null, null_mask) = maybe_null(values);
         let new_mask = match (null_mask, mask) {
             (Some(lmask), Some(rmask)) => Some(Elemwise::elemwise_oo(lmask, rmask, |x, y| x | y)),

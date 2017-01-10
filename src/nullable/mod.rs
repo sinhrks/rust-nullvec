@@ -1,3 +1,13 @@
+//! Nullable scalar which can contains specified type `T` and `Null`.
+//!
+//! # Examples
+//!
+//! ```
+//! use nullvec::prelude::*;
+//! let v = Nullable::new(1);
+//! assert_eq!(v + Nullable::Null, Nullable::Null);
+//! ```
+
 use std::f64;
 use std::f32;
 
@@ -5,9 +15,12 @@ mod nullable_nullable_ops;
 mod nullable_primitive_ops;
 use traits::NullStorable;
 
+/// Nullable Scalar
 #[derive(Debug, PartialEq)]
 pub enum Nullable<T: NullStorable> {
+    /// Value which is not `Null`
     Value(T),
+    /// `Null`
     Null,
 }
 
@@ -51,12 +64,30 @@ impl NullStorable for f32 {
     }
 }
 
-/// /////////////////////////////////////////////////////////////////////////////
-/// Basic impl
-/// /////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// Basic impl
+////////////////////////////////////////////////////////////////////////////////
 
 impl<T: NullStorable> Nullable<T> {
-    fn new(value: T) -> Self {
+
+    /// Create new `Nullable<T>` from `T`.
+    ///
+    /// Float `NAN` is automatically replaced to `Null`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::f64;
+    /// use nullvec::prelude::*;
+    ///
+    /// let n = Nullable::new(1);
+    /// assert_eq!(&n + 1, Nullable::new(2));
+    /// assert_eq!(&n + Nullable::Null, Nullable::Null);
+    ///
+    /// let n = Nullable::new(f64::NAN);
+    /// assert_eq!(n, Nullable::Null);
+    /// ```
+    pub fn new(value: T) -> Self {
         if value.is_null() {
             Nullable::Null
         } else {
