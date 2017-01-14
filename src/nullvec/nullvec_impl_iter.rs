@@ -1,13 +1,10 @@
-use std::iter::{FromIterator, IntoIterator, ExactSizeIterator};
+use std::iter::{FromIterator, IntoIterator};
 
 use super::NullVec;
 use nullable::Nullable;
 use traits::{NullStorable, Slicer};
 
-////////////////////////////////////////////////////////////////////////////////
 // Convert from Iterators
-////////////////////////////////////////////////////////////////////////////////
-
 impl<T: NullStorable> FromIterator<T> for NullVec<T> {
     fn from_iter<I>(iter: I) -> Self
         where I: IntoIterator<Item = T>
@@ -26,10 +23,7 @@ impl<T: NullStorable> FromIterator<Nullable<T>> for NullVec<T> {
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
 // Convert to Iterators
-////////////////////////////////////////////////////////////////////////////////
-
 impl<T: Clone + NullStorable> NullVec<T> {
     /// Returns Iterator which iterates raw values.
     ///
@@ -53,10 +47,7 @@ impl<T: Clone + NullStorable> NullVec<T> {
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
 // Iterator returns Nullable
-////////////////////////////////////////////////////////////////////////////////
-
 impl<T: Clone + NullStorable> IntoIterator for NullVec<T> {
     type Item = Nullable<T>;
     type IntoIter = NullVecIntoIter<T>;
@@ -98,10 +89,9 @@ impl<T: Clone + NullStorable> Iterator for NullVecIntoIter<T> {
 
 // ToDo: FusedIterator and TrustedLen
 
-////////////////////////////////////////////////////////////////////////////////
-// Iterator returns raw values
-////////////////////////////////////////////////////////////////////////////////
-
+/// /////////////////////////////////////////////////////////////////////////////
+/// Iterator returns raw values
+/// /////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug)]
 pub struct NullVecRawIter<'a, T: 'a + Clone + NullStorable> {
     data: &'a NullVec<T>,
@@ -138,10 +128,9 @@ impl<'a, T> Iterator for NullVecRawIter<'a, T>
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Iterator returns non-null raw values
-////////////////////////////////////////////////////////////////////////////////
-
+/// /////////////////////////////////////////////////////////////////////////////
+/// Iterator returns non-null raw values
+/// /////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug)]
 pub struct NullVecNotNullIter<'a, T: 'a + Clone + NullStorable> {
     data: &'a NullVec<T>,
@@ -168,14 +157,15 @@ impl<'a, T> Iterator for NullVecNotNullIter<'a, T>
                     } else {
                         let val: &T = unsafe { self.data.data.get_unchecked(self.current) };
                         result = Some(val);
+                        self.current += 1;
                     }
                 }
                 None => {
                     let val: &T = unsafe { self.data.data.get_unchecked(self.current) };
                     result = Some(val);
+                    self.current += 1;
                 }
             };
-            self.current += 1;
         } else {
             result = None;
         }
@@ -278,6 +268,7 @@ mod tests {
         assert_eq!(it.size_hint(), (0, Some(0)));
     }
 
+    #[test]
     fn test_iter_not_null_long() {
         let values: Vec<usize> = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
         let nvec = NullVec::with_mask(values,

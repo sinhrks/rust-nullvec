@@ -1,5 +1,8 @@
 use nullvec::NullVec;
 
+mod array_impl;
+mod array_impl_aggregation;
+mod array_impl_slicer;
 mod convert;
 mod scalar_impl;
 

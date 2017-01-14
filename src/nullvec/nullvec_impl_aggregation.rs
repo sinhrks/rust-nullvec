@@ -33,7 +33,7 @@ impl<T> BasicAggregation for NullVec<T>
     fn count(&self) -> Self::Counted {
         let mut count = 0usize;
         match self.mask {
-            Some(ref mask) => {
+            Some(_) => {
                 for _ in self.iter_not_null() {
                     count += 1;
                 }
@@ -158,11 +158,9 @@ impl<T> ComparisonAggregation for NullVec<T>
 #[cfg(test)]
 mod tests {
 
-    use std::f64;
-
     use nullable::Nullable;
     use nullvec::NullVec;
-    use traits::{Slicer, BasicAggregation, NumericAggregation, ComparisonAggregation};
+    use traits::{BasicAggregation, NumericAggregation, ComparisonAggregation};
 
     #[test]
     fn test_sum() {

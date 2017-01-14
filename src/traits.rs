@@ -25,10 +25,6 @@ pub trait NullStorable: Default {
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Indexing
-////////////////////////////////////////////////////////////////////////////////
-
 /// Indexing methods for 1-dimensional array-likes.
 pub trait Slicer: Sized {
     type Scalar;
@@ -86,10 +82,6 @@ pub trait Slicer: Sized {
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Aggregation
-////////////////////////////////////////////////////////////////////////////////
-
 /// Basic aggregation methods
 pub trait BasicAggregation {
     // result which can keep current dtype
@@ -128,4 +120,9 @@ pub trait ComparisonAggregation {
     fn min(&self) -> Self::Kept;
     /// Return max of contained values.
     fn max(&self) -> Self::Kept;
+}
+
+/// Concatenate along row
+pub trait Append: Sized {
+    fn append(&self, other: &Self) -> Self;
 }

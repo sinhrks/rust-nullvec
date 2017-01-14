@@ -11,8 +11,8 @@
 use std::f64;
 use std::f32;
 
-mod nullable_nullable_ops;
-mod nullable_primitive_ops;
+mod nullable_ops_nullable;
+mod nullable_ops_primitive;
 use traits::NullStorable;
 
 /// Nullable Scalar
@@ -64,12 +64,10 @@ impl NullStorable for f32 {
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
 // Basic impl
-////////////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////////////
 
 impl<T: NullStorable> Nullable<T> {
-
     /// Create new `Nullable<T>` from `T`.
     ///
     /// Float `NAN` is automatically replaced to `Null`.
