@@ -1,11 +1,9 @@
 
-use num::Float;
-
 use algos::indexing::Indexing;
 
 use super::NullVec;
 use nullable::Nullable;
-use traits::{NullStorable, Slicer};
+use traits::{NullStorable, Slicer, Append};
 
 impl<T: Clone + NullStorable> NullVec<T> {
     pub fn has_null(&self) -> bool {
@@ -249,6 +247,32 @@ impl<T: Clone + NullStorable> Slicer for NullVec<T> {
             data: new_data,
             mask: new_mask,
         }
+    }
+}
+
+impl<T: Clone + NullStorable> Append for NullVec<T> {
+    fn append(&self, other: &NullVec<T>) -> Self {
+        let new_data: Vec<T> =
+            self.data.iter().cloned().chain(other.data.iter().cloned()).collect();
+        let new_mask = match (&self.mask, &other.mask) {
+            (&None, &None) => None,
+            (&Some(ref lmask), &None) => {
+                let new_mask: Vec<bool> =
+                    lmask.iter().cloned().chain(other.is_null().into_iter()).collect();
+                Some(new_mask)
+            }
+            (&None, &Some(ref rmask)) => {
+                let new_mask: Vec<bool> =
+                    other.is_null().into_iter().chain(rmask.iter().cloned()).collect();
+                Some(new_mask)
+            }
+            (&Some(ref lmask), &Some(ref rmask)) => {
+                let new_mask: Vec<bool> =
+                    lmask.iter().cloned().chain(rmask.iter().cloned()).collect();
+                Some(new_mask)
+            }
+        };
+        NullVec::with_mask(new_data, new_mask)
     }
 }
 

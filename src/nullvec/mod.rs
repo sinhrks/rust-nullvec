@@ -13,26 +13,19 @@
 //! ```
 
 // use std::collections::BitVec;
-use num::Float;
 
-mod nullvec_impl;
-
-// aggregation
-mod nullvec_aggregation;
-
-// convert
 mod nullvec_convert;
-
-// iterator
-mod nullvec_iter;
+mod nullvec_impl;
+mod nullvec_impl_aggregation;
+mod nullvec_impl_iter;
 
 // broadcast op
-mod nullvec_primitive_ops;
-mod nullvec_nullable_ops;
+mod nullvec_ops_primitive;
+mod nullvec_ops_nullable;
 
 // elemwise op
-mod nullvec_vec_ops;
-mod nullvec_nullvec_ops;
+mod nullvec_ops_vec;
+mod nullvec_ops_nullvec;
 
 use algos::vec_ops::Elemwise;
 use traits::NullStorable;
@@ -73,7 +66,6 @@ fn maybe_null<T: NullStorable>(values: Vec<T>) -> (Vec<T>, Option<Vec<bool>>) {
 }
 
 impl<T: NullStorable> NullVec<T> {
-
     /// Create new `NullVec<T>` from `Vec<T>`.
     ///
     /// Float `NAN` is automatically replaced to `Null`.

@@ -5,7 +5,7 @@ pub use nullable::Nullable::Null;
 
 pub use generic::{Array, Scalar};
 
-pub use traits::{Slicer, BasicAggregation, NumericAggregation, ComparisonAggregation};
+pub use traits::{Slicer, BasicAggregation, NumericAggregation, ComparisonAggregation, Append};
 
 /// Module used for other package developers.
 /// Users doesn't need to use it.
