@@ -16,7 +16,7 @@ mod nullable_ops_primitive;
 use traits::NullStorable;
 
 /// Nullable Scalar
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Nullable<T: NullStorable> {
     /// Value which is not `Null`
     Value(T),
