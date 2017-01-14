@@ -8,6 +8,25 @@ impl Array {
         values.into()
     }
 
+    pub fn dtype(&self) -> String {
+        match self {
+            &Array::Int64Array(_) => "i64".to_string(),
+            &Array::Int32Array(_) => "i32".to_string(),
+            &Array::Int16Array(_) => "i16".to_string(),
+            &Array::Int8Array(_) => "i8".to_string(),
+            &Array::IsizeArray(_) => "isize".to_string(),
+            &Array::UInt64Array(_) => "u64".to_string(),
+            &Array::UInt32Array(_) => "u32".to_string(),
+            &Array::UInt16Array(_) => "u16".to_string(),
+            &Array::UInt8Array(_) => "u8".to_string(),
+            &Array::UsizeArray(_) => "usize".to_string(),
+            &Array::Float64Array(_) => "f64".to_string(),
+            &Array::Float32Array(_) => "f32".to_string(),
+            &Array::BoolArray(_) => "bool".to_string(),
+            &Array::StringArray(_) => "str".to_string(),
+        }
+    }
+
     pub fn is_numeric(&self) -> bool {
         match self {
             &Array::Int64Array(_) => true,
