@@ -4,16 +4,20 @@ use nullvec::prelude::*;
 
 #[test]
 fn test_creation() {
-    let iarr = Array::Int64Array(NullVec::new(vec![1, 2, 3]));
+    let iarr = Array::Int64Array(NullVec::new(vec![1i64, 2, 3]));
+    assert_eq!(iarr.dtype(), "i64".to_string());
     assert_eq!(iarr.len(), 3);
 
-    let farr = Array::Float64Array(NullVec::new(vec![1.1, 2.1, 3.1, 4.1]));
+    let farr = Array::Float64Array(NullVec::new(vec![1.1f64, 2.1, 3.1, 4.1]));
+    assert_eq!(farr.dtype(), "f64".to_string());
     assert_eq!(farr.len(), 4);
 
     let barr = Array::BoolArray(NullVec::new(vec![true, false, true]));
+    assert_eq!(barr.dtype(), "bool".to_string());
     assert_eq!(barr.len(), 3);
 
     let sarr = Array::StringArray(NullVec::new(vec!["a".to_string(), "b".to_string()]));
+    assert_eq!(sarr.dtype(), "str".to_string());
     assert_eq!(sarr.len(), 2);
 }
 
