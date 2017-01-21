@@ -277,22 +277,23 @@ impl<T: Clone + NullStorable> Append for NullVec<T> {
 }
 
 // Stringify
-impl<T> NullVec<T> where T: NullStorable + Clone + ToString {
+impl<T> NullVec<T>
+    where T: NullStorable + Clone + ToString
+{
     pub fn to_string_vec(&self) -> Vec<String> {
         match self.mask {
             Some(ref mask) => {
                 self.data
                     .iter()
                     .zip(mask.iter())
-                    .map(|(v, &m)|
-                        if m == true {
-                            "Null".to_string()
-                        } else {
-                            v.clone().to_string()
-                        })
+                    .map(|(v, &m)| if m == true {
+                        "Null".to_string()
+                    } else {
+                        v.clone().to_string()
+                    })
                     .collect()
-                },
-            None => self.data.iter().map(|x| x.to_string()).collect()
+            }
+            None => self.data.iter().map(|x| x.to_string()).collect(),
         }
     }
 }
