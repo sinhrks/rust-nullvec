@@ -276,6 +276,29 @@ impl<T: Clone + NullStorable> Append for NullVec<T> {
     }
 }
 
+// Stringify
+impl<T> NullVec<T>
+    where T: NullStorable + Clone + ToString
+{
+    pub fn to_string_vec(&self) -> Vec<String> {
+        match self.mask {
+            Some(ref mask) => {
+                self.data
+                    .iter()
+                    .zip(mask.iter())
+                    .map(|(v, &m)| if m == true {
+                        "Null".to_string()
+                    } else {
+                        v.clone().to_string()
+                    })
+                    .collect()
+            }
+            None => self.data.iter().map(|x| x.to_string()).collect(),
+        }
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
 
@@ -524,5 +547,23 @@ mod tests {
         let res = nvec.ilocs_forced(&vec![2, 1]);
         assert_eq!(res.data, vec![0, 0]);
         assert_eq!(res.mask, Some(vec![true, true]));
+    }
+
+    #[test]
+    fn test_to_string_vec() {
+        let values: Vec<usize> = vec![1, 2, 3];
+        let nvec = NullVec::new(values);
+        let exp = vec!["1".to_string(), "2".to_string(), "3".to_string()];
+        assert_eq!(nvec.to_string_vec(), exp);
+
+        let values: Vec<usize> = vec![1, 2, 3];
+        let nvec = NullVec::with_mask(values, Some(vec![false, false, true]));
+        let exp = vec!["1".to_string(), "2".to_string(), "Null".to_string()];
+        assert_eq!(nvec.to_string_vec(), exp);
+
+        let values: Vec<String> = vec!["a".to_string(), "bb".to_string(), "".to_string()];
+        let nvec = NullVec::with_mask(values, Some(vec![false, false, true]));
+        let exp = vec!["a".to_string(), "bb".to_string(), "Null".to_string()];
+        assert_eq!(nvec.to_string_vec(), exp);
     }
 }

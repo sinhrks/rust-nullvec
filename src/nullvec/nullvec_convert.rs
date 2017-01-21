@@ -48,7 +48,7 @@ macro_rules! impl_from {
                 match values.mask {
                     None => values.data,
                     // ToDo: must be TryFrom
-                    _ => panic!("Unable to convert NaN to int")
+                    _ => panic!("Unable to convert NaN to specified type")
                 }
             }
         }
@@ -91,6 +91,7 @@ macro_dispatch!(impl_from,
                 f32,
                 bool,
                 String);
+
 
 #[cfg(test)]
 mod tests {
