@@ -1,5 +1,5 @@
 use super::Array;
-use traits::Append;
+use traits::{Stringify, Append};
 
 impl Array {
     pub fn new<I>(values: I) -> Self
@@ -43,6 +43,27 @@ impl Array {
             &Array::Float32Array(_) => true,
             &Array::BoolArray(_) => false,
             &Array::StringArray(_) => false,
+        }
+    }
+}
+
+impl Stringify for Array {
+    fn into_string_vec(&self) -> Vec<String> {
+        match self {
+            &Array::Int64Array(ref vals) => vals.into_string_vec(),
+            &Array::Int32Array(ref vals) => vals.into_string_vec(),
+            &Array::Int16Array(ref vals) => vals.into_string_vec(),
+            &Array::Int8Array(ref vals) => vals.into_string_vec(),
+            &Array::IsizeArray(ref vals) => vals.into_string_vec(),
+            &Array::UInt64Array(ref vals) => vals.into_string_vec(),
+            &Array::UInt32Array(ref vals) => vals.into_string_vec(),
+            &Array::UInt16Array(ref vals) => vals.into_string_vec(),
+            &Array::UInt8Array(ref vals) => vals.into_string_vec(),
+            &Array::UsizeArray(ref vals) => vals.into_string_vec(),
+            &Array::Float64Array(ref vals) => vals.into_string_vec(),
+            &Array::Float32Array(ref vals) => vals.into_string_vec(),
+            &Array::BoolArray(ref vals) => vals.into_string_vec(),
+            &Array::StringArray(ref vals) => vals.into_string_vec(),
         }
     }
 }
@@ -91,5 +112,35 @@ impl Append for Array {
             }
             (_, _) => panic!(""),
         }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+
+    use generic::Array;
+    use nullvec::NullVec;
+    use traits::Stringify;
+
+    #[test]
+    fn test_into_string_vec() {
+        let values: Vec<usize> = vec![1, 2, 3];
+        let nvec = NullVec::new(values);
+        let arr: Array = nvec.into();
+        let exp = vec!["1".to_string(), "2".to_string(), "3".to_string()];
+        assert_eq!(arr.into_string_vec(), exp);
+
+        let values: Vec<usize> = vec![1, 2, 3];
+        let nvec = NullVec::with_mask(values, Some(vec![false, false, true]));
+        let arr: Array = nvec.into();
+        let exp = vec!["1".to_string(), "2".to_string(), "Null".to_string()];
+        assert_eq!(arr.into_string_vec(), exp);
+
+        let values: Vec<String> = vec!["a".to_string(), "bb".to_string(), "".to_string()];
+        let nvec = NullVec::with_mask(values, Some(vec![false, false, true]));
+        let arr: Array = nvec.into();
+        let exp = vec!["a".to_string(), "bb".to_string(), "Null".to_string()];
+        assert_eq!(arr.into_string_vec(), exp);
     }
 }

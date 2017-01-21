@@ -82,6 +82,11 @@ pub trait Slicer: Sized {
     }
 }
 
+/// Stringify myself
+pub trait Stringify {
+    fn into_string_vec(&self) -> Vec<String>;
+}
+
 /// Basic aggregation methods
 pub trait BasicAggregation {
     // result which can keep current dtype

@@ -3,7 +3,7 @@ use algos::indexing::Indexing;
 
 use super::NullVec;
 use nullable::Nullable;
-use traits::{NullStorable, Slicer, Append};
+use traits::{NullStorable, Slicer, Stringify, Append};
 
 impl<T: Clone + NullStorable> NullVec<T> {
     pub fn has_null(&self) -> bool {
@@ -276,11 +276,10 @@ impl<T: Clone + NullStorable> Append for NullVec<T> {
     }
 }
 
-// Stringify
-impl<T> NullVec<T>
+impl<T> Stringify for NullVec<T>
     where T: NullStorable + Clone + ToString
 {
-    pub fn to_string_vec(&self) -> Vec<String> {
+    fn into_string_vec(&self) -> Vec<String> {
         match self.mask {
             Some(ref mask) => {
                 self.data
@@ -306,7 +305,7 @@ mod tests {
 
     use nullable::Nullable;
     use nullvec::NullVec;
-    use traits::Slicer;
+    use traits::{Slicer, Stringify};
 
     #[test]
     fn test_int_isnull() {
@@ -550,20 +549,20 @@ mod tests {
     }
 
     #[test]
-    fn test_to_string_vec() {
+    fn test_into_string_vec() {
         let values: Vec<usize> = vec![1, 2, 3];
         let nvec = NullVec::new(values);
         let exp = vec!["1".to_string(), "2".to_string(), "3".to_string()];
-        assert_eq!(nvec.to_string_vec(), exp);
+        assert_eq!(nvec.into_string_vec(), exp);
 
         let values: Vec<usize> = vec![1, 2, 3];
         let nvec = NullVec::with_mask(values, Some(vec![false, false, true]));
         let exp = vec!["1".to_string(), "2".to_string(), "Null".to_string()];
-        assert_eq!(nvec.to_string_vec(), exp);
+        assert_eq!(nvec.into_string_vec(), exp);
 
         let values: Vec<String> = vec!["a".to_string(), "bb".to_string(), "".to_string()];
         let nvec = NullVec::with_mask(values, Some(vec![false, false, true]));
         let exp = vec!["a".to_string(), "bb".to_string(), "Null".to_string()];
-        assert_eq!(nvec.to_string_vec(), exp);
+        assert_eq!(nvec.into_string_vec(), exp);
     }
 }

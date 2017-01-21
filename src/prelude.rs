@@ -10,7 +10,7 @@ pub use traits::{Slicer, BasicAggregation, NumericAggregation, ComparisonAggrega
 /// Module used for other package developers.
 /// Users doesn't need to use it.
 pub mod dev {
-    pub use traits::NullStorable;
+    pub use traits::{NullStorable, Stringify};
 
     pub mod algos {
         pub use algos::indexing::Indexing;
