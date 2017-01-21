@@ -1,3 +1,5 @@
+use std::fmt;
+
 use super::Scalar;
 use nullable::Nullable;
 
@@ -107,8 +109,34 @@ impl Scalar {
     }
 }
 
+// Implement `Display` for `Scalar`.
+impl fmt::Display for Scalar {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Use `self.number` to refer to each positional data point.
+        match self {
+            &Scalar::Null => write!(f, "Null"),
+            &Scalar::i64(ref val) => write!(f, "{}", val),
+            &Scalar::i32(ref val) => write!(f, "{}", val),
+            &Scalar::i16(ref val) => write!(f, "{}", val),
+            &Scalar::i8(ref val) => write!(f, "{}", val),
+            &Scalar::isize(ref val) => write!(f, "{}", val),
+            &Scalar::u64(ref val) => write!(f, "{}", val),
+            &Scalar::u32(ref val) => write!(f, "{}", val),
+            &Scalar::u16(ref val) => write!(f, "{}", val),
+            &Scalar::u8(ref val) => write!(f, "{}", val),
+            &Scalar::usize(ref val) => write!(f, "{}", val),
+            &Scalar::f64(ref val) => write!(f, "{}", val),
+            &Scalar::f32(ref val) => write!(f, "{}", val),
+            &Scalar::bool(ref val) => write!(f, "{}", val),
+            &Scalar::String(ref val) => write!(f, "{}", val),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
+
+    use std::io::Write;
 
     use super::super::Scalar;
     use nullable::Nullable;
@@ -233,5 +261,34 @@ mod tests {
     fn test_str_to_bool() {
         let s = Scalar::String("true".to_string());
         s.as_bool();
+    }
+
+    #[test]
+    fn test_scalar_format() {
+        let s = Scalar::Null;
+        // better way?
+        let mut buf = Vec::new();
+        let _ = write!(&mut buf, "{}", s);
+        assert_eq!(&buf, b"Null");
+
+        let s = Scalar::i64(100);
+        let mut buf = Vec::new();
+        let _ = write!(&mut buf, "{}", s);
+        assert_eq!(&buf, b"100");
+
+        let s = Scalar::f64(1.1);
+        let mut buf = Vec::new();
+        let _ = write!(&mut buf, "{}", s);
+        assert_eq!(&buf, b"1.1");
+
+        let s = Scalar::bool(true);
+        let mut buf = Vec::new();
+        let _ = write!(&mut buf, "{}", s);
+        assert_eq!(&buf, b"true");
+
+        let s = Scalar::String("xx".to_string());
+        let mut buf = Vec::new();
+        let _ = write!(&mut buf, "{}", s);
+        assert_eq!(&buf, b"xx");
     }
 }
