@@ -27,6 +27,9 @@ mod nullvec_ops_nullable;
 mod nullvec_ops_vec;
 mod nullvec_ops_nullvec;
 
+// scalar compat
+mod nullvec_scalar;
+
 use algos::vec_ops::Elemwise;
 use traits::NullStorable;
 

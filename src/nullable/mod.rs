@@ -44,10 +44,6 @@ impl NullStorable for f64 {
     fn is_null(&self) -> bool {
         self.is_nan()
     }
-
-    fn is_not_null(&self) -> bool {
-        !self.is_nan()
-    }
 }
 
 impl NullStorable for f32 {
@@ -57,10 +53,6 @@ impl NullStorable for f32 {
 
     fn is_null(&self) -> bool {
         self.is_nan()
-    }
-
-    fn is_not_null(&self) -> bool {
-        !self.is_nan()
     }
 }
 

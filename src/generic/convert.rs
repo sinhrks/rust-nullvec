@@ -66,14 +66,12 @@ add_array_conversion!(bool, BoolArray);
 add_array_conversion!(String, StringArray);
 
 // &str handling
-//
-// impl<'a> From<Vec<&'a str>> for Array {
-// fn from(values: Vec<&'a str>) -> Self {
-// let new_values: Vec<String> = values.iter().map(|&x| String::from(x)).collect();
-// Array::StringArray(new_values)
-// }
-// }
-//
+impl<'a> From<Vec<&'a str>> for Array {
+    fn from(values: Vec<&str>) -> Self {
+        let string: Vec<String> = values.iter().map(|x| x.to_string()).collect();
+        string.into()
+    }
+}
 
 // Scalar Vec to Array
 impl From<Vec<Scalar>> for Array {
@@ -305,12 +303,11 @@ add_scalar_conversion!(String);
 
 // &str handling
 //
-// impl<'a> From<&'a str> for Scalar {
-// fn from(value: &'a str) -> Self {
-// Scalar::String(value.to_string())
-// }
-// }
-//
+impl<'a> From<&'a str> for Scalar {
+    fn from(value: &'a str) -> Self {
+        Scalar::String(value.to_string())
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -522,9 +519,9 @@ mod tests {
         let res: Array = vals.into();
         assert_eq!(res, exp);
 
-        // let vals: Vec<&str> = vec!["a", "b"];
-        // let res: Array = vals.into();
-        // assert_eq!(res, exp);
+        let vals: Vec<&str> = vec!["a", "b"];
+        let res: Array = vals.into();
+        assert_eq!(res, exp);
 
         let vals: Vec<Scalar> = vec![Scalar::String("a".to_string()),
                                      Scalar::String("b".to_string())];
@@ -536,10 +533,9 @@ mod tests {
         let res = Array::from(vals);
         assert_eq!(res, exp);
 
-
-        // let vals: Vec<&str> = vec!["a", "b"];
-        // let res = Array::from(vals);
-        // assert_eq!(res, exp);
+        let vals: Vec<&str> = vec!["a", "b"];
+        let res = Array::from(vals);
+        assert_eq!(res, exp);
 
         let vals: Vec<Scalar> = vec![Scalar::String("a".to_string()),
                                      Scalar::String("b".to_string())];
@@ -643,11 +639,11 @@ mod tests {
         assert_eq!(res, exp);
 
         // &str
-        // let res: Scalar = "a".into();
-        // assert_eq!(res, exp);
+        let res: Scalar = "a".into();
+        assert_eq!(res, exp);
 
-        // let res: Scalar = Scalar::from("a");
-        // assert_eq!(res, exp);
+        let res: Scalar = Scalar::from("a");
+        assert_eq!(res, exp);
     }
 
     #[test]

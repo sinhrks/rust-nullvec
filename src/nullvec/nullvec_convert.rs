@@ -8,6 +8,14 @@ impl<T: NullStorable> From<Vec<T>> for NullVec<T> {
     }
 }
 
+// &str handling
+impl<'a> From<Vec<&'a str>> for NullVec<String> {
+    fn from(values: Vec<&'a str>) -> Self {
+        let string: Vec<String> = values.iter().map(|x| x.to_string()).collect();
+        string.into()
+    }
+}
+
 impl<T: NullStorable> From<Vec<Nullable<T>>> for NullVec<T> {
     fn from(values: Vec<Nullable<T>>) -> Self {
         let mut new_values: Vec<T> = Vec::with_capacity(values.len());
@@ -115,13 +123,16 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
     fn test_float_conv_from_vec_contains_null() {
-
         let nv = NullVec::<f64>::from(vec![1., f64::NAN]);
-        assert_eq!(nv.data, vec![1., 0.]);
+        assert_eq!(nv.data, vec![1.0f64, 0.]);
         assert_eq!(nv.mask, Some(vec![false, true]));
+    }
 
+    #[test]
+    #[should_panic]
+    fn test_float_conv_from_vec_contains_null_panic() {
+        let nv = NullVec::<f64>::from(vec![1., f64::NAN]);
         // ToDo: this must success
         Vec::<f64>::from(nv);
     }
@@ -141,5 +152,25 @@ mod tests {
 
         let res = Vec::<Nullable<f64>>::from(nv);
         assert_eq!(res, vec![Nullable::Value(1.), Nullable::Null]);
+    }
+
+    #[test]
+    fn test_string_conv_from_vec() {
+        let nv = NullVec::<String>::from(vec!["a".to_string(), "b".to_string()]);
+        assert_eq!(nv.data, vec!["a".to_string(), "b".to_string()]);
+        assert_eq!(nv.mask, None);
+
+        let res = Vec::<String>::from(nv);
+        assert_eq!(res, vec!["a".to_string(), "b".to_string()]);
+    }
+
+    #[test]
+    fn test_str_conv_from_vec() {
+        let nv = NullVec::<String>::from(vec!["a", "b"]);
+        assert_eq!(nv.data, vec!["a".to_string(), "b".to_string()]);
+        assert_eq!(nv.mask, None);
+
+        let res = Vec::<String>::from(nv);
+        assert_eq!(res, vec!["a".to_string(), "b".to_string()]);
     }
 }

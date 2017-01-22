@@ -21,7 +21,7 @@ pub trait NullStorable: Default {
     /// Whether the value should be regarded as null.
     /// Must be inverse of `is_null`.
     fn is_not_null(&self) -> bool {
-        true
+        !self.is_null()
     }
 }
 

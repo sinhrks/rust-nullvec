@@ -3,6 +3,7 @@ use std::fmt;
 use super::Scalar;
 use nullable::Nullable;
 
+
 macro_rules! iml_scalar_as {
     ($t:ident, $as_op:ident, $is_op:ident) => {
 
