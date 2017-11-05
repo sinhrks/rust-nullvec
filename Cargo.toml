@@ -1,14 +1,14 @@
 [package]
 name = "nullvec"
-version = "0.1.5"
+version = "0.2.0"
 authors = ["sinhrks <sinhrks@gmail.com>"]
 license = "BSD-3-Clause"
 readme = "README.md"
 description = "Rust nullable vector, which can contain null(missing) values as element"
 keywords = [ "Nan", "Null", "Missing", "Masked", "Vec"]
+categories = [ "data-structures" ]
 documentation = "https://docs.rs/nullvec/"
 repository = "https://github.com/sinhrks/rust-nullvec"
 
 [dependencies]
-num = "0.1.36"
-rustc-serialize = "0.3.21"
+num = "0.1.40"

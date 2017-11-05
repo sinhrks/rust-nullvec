@@ -8,7 +8,7 @@ mod scalar_impl;
 
 /// Generic scalar which can contain arbitrary primitive types.
 #[allow(non_camel_case_types)]
-#[derive(RustcDecodable, RustcEncodable, Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum Scalar {
     /// Store `i64` value
     i64(i64),

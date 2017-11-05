@@ -1,5 +1,4 @@
 extern crate num;
-extern crate rustc_serialize;
 
 // macro must be defined first to be usable in other modules
 #[macro_use]
