@@ -71,7 +71,7 @@ impl<T: Clone + NullStorable> NullVec<T> {
 
 
 impl<T: Clone + NullStorable> NullVec<T> {
-    /// Returns `NullVec<T>`` which has the same length as the caller
+    /// Returns `NullVec<T>` which has the same length as the caller
     /// whose values are all `Null`.
     ///
     /// # Examples
