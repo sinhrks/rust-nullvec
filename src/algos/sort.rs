@@ -7,8 +7,9 @@ pub struct Sorter;
 
 impl Sorter {
     pub fn sort<T, R>(values: R) -> Vec<T>
-        where T: Clone + Ord,
-              R: AsRef<Vec<T>>
+    where
+        T: Clone + Ord,
+        R: AsRef<Vec<T>>,
     {
 
         let values: &Vec<T> = values.as_ref();
@@ -21,8 +22,9 @@ impl Sorter {
 
     /// Sort by values returning indexer and sorted values
     pub fn argsort<T, R>(values: R) -> (Vec<usize>, Vec<T>)
-        where T: Clone + Ord,
-              R: AsRef<Vec<T>>
+    where
+        T: Clone + Ord,
+        R: AsRef<Vec<T>>,
     {
 
         let values: &Vec<T> = values.as_ref();
@@ -47,8 +49,9 @@ impl Sorter {
 
     /// Sort values by key returning sorted key and values
     pub fn sort_by<T, U>(keys: &Vec<T>, values: &Vec<U>) -> (Vec<T>, Vec<U>)
-        where T: Clone + Ord,
-              U: Clone
+    where
+        T: Clone + Ord,
+        U: Clone,
     {
 
         let mut map: BTreeMap<T, Vec<U>> = BTreeMap::new();

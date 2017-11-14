@@ -209,8 +209,10 @@ fn test_str_vec_to_array() {
     let res: Array = vals.into();
     assert_eq!(res, exp);
 
-    let vals: Vec<Scalar> = vec![Scalar::String("a".to_string()),
-                                 Scalar::String("b".to_string())];
+    let vals: Vec<Scalar> = vec![
+        Scalar::String("a".to_string()),
+        Scalar::String("b".to_string()),
+    ];
     let res: Array = vals.into();
     assert_eq!(res, exp);
 
@@ -223,8 +225,10 @@ fn test_str_vec_to_array() {
     let res = Array::from(vals);
     assert_eq!(res, exp);
 
-    let vals: Vec<Scalar> = vec![Scalar::String("a".to_string()),
-                                 Scalar::String("b".to_string())];
+    let vals: Vec<Scalar> = vec![
+        Scalar::String("a".to_string()),
+        Scalar::String("b".to_string()),
+    ];
     let res = Array::from(vals);
     assert_eq!(res, exp);
 }
@@ -232,8 +236,10 @@ fn test_str_vec_to_array() {
 #[test]
 fn test_str_array_to_vec() {
     let exp: Vec<String> = vec!["a".to_string(), "b".to_string()];
-    let exps: Vec<Scalar> = vec![Scalar::String("a".to_string()),
-                                 Scalar::String("b".to_string())];
+    let exps: Vec<Scalar> = vec![
+        Scalar::String("a".to_string()),
+        Scalar::String("b".to_string()),
+    ];
 
     // Into
     let vals = Array::StringArray(NullVec::new(vec!["a".to_string(), "b".to_string()]));

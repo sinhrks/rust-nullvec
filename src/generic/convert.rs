@@ -82,42 +82,102 @@ impl From<Vec<Scalar>> for Array {
         // ToDo: Directly create Nullable internal data
         match &values[0] {
             &Scalar::i64(_) => {
-                values.iter().map(|ref x| x.as_i64()).collect::<NullVec<i64>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_i64())
+                    .collect::<NullVec<i64>>()
+                    .into()
             }
             &Scalar::i32(_) => {
-                values.iter().map(|ref x| x.as_i32()).collect::<NullVec<i32>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_i32())
+                    .collect::<NullVec<i32>>()
+                    .into()
             }
             &Scalar::i16(_) => {
-                values.iter().map(|ref x| x.as_i16()).collect::<NullVec<i16>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_i16())
+                    .collect::<NullVec<i16>>()
+                    .into()
             }
-            &Scalar::i8(_) => values.iter().map(|ref x| x.as_i8()).collect::<NullVec<i8>>().into(),
+            &Scalar::i8(_) => {
+                values
+                    .iter()
+                    .map(|ref x| x.as_i8())
+                    .collect::<NullVec<i8>>()
+                    .into()
+            }
             &Scalar::isize(_) => {
-                values.iter().map(|ref x| x.as_isize()).collect::<NullVec<isize>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_isize())
+                    .collect::<NullVec<isize>>()
+                    .into()
             }
             &Scalar::u64(_) => {
-                values.iter().map(|ref x| x.as_u64()).collect::<NullVec<u64>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_u64())
+                    .collect::<NullVec<u64>>()
+                    .into()
             }
             &Scalar::u32(_) => {
-                values.iter().map(|ref x| x.as_u32()).collect::<NullVec<u32>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_u32())
+                    .collect::<NullVec<u32>>()
+                    .into()
             }
             &Scalar::u16(_) => {
-                values.iter().map(|ref x| x.as_u16()).collect::<NullVec<u16>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_u16())
+                    .collect::<NullVec<u16>>()
+                    .into()
             }
-            &Scalar::u8(_) => values.iter().map(|ref x| x.as_u8()).collect::<NullVec<u8>>().into(),
+            &Scalar::u8(_) => {
+                values
+                    .iter()
+                    .map(|ref x| x.as_u8())
+                    .collect::<NullVec<u8>>()
+                    .into()
+            }
             &Scalar::usize(_) => {
-                values.iter().map(|ref x| x.as_usize()).collect::<NullVec<usize>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_usize())
+                    .collect::<NullVec<usize>>()
+                    .into()
             }
             &Scalar::f64(_) => {
-                values.iter().map(|ref x| x.as_f64()).collect::<NullVec<f64>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_f64())
+                    .collect::<NullVec<f64>>()
+                    .into()
             }
             &Scalar::f32(_) => {
-                values.iter().map(|ref x| x.as_f32()).collect::<NullVec<f32>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_f32())
+                    .collect::<NullVec<f32>>()
+                    .into()
             }
             &Scalar::bool(_) => {
-                values.iter().map(|ref x| x.as_bool()).collect::<NullVec<bool>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_bool())
+                    .collect::<NullVec<bool>>()
+                    .into()
             }
             &Scalar::String(_) => {
-                values.iter().map(|ref x| x.as_str()).collect::<NullVec<String>>().into()
+                values
+                    .iter()
+                    .map(|ref x| x.as_str())
+                    .collect::<NullVec<String>>()
+                    .into()
             }
             // ToDo: Fix me
             &Scalar::Null => panic!("unable to infer dtype"),
@@ -348,9 +408,14 @@ impl<'a> From<&'a str> for Scalar {
         if value == "Null" {
             Scalar::Null
         } else {
-            value.parse().map(Scalar::i64)
-                .or_else(|_| value.parse().map(Scalar::f64)
-                         .or_else(|_| value.parse().map(Scalar::bool)))
+            value
+                .parse()
+                .map(Scalar::i64)
+                .or_else(|_| {
+                    value.parse().map(Scalar::f64).or_else(|_| {
+                        value.parse().map(Scalar::bool)
+                    })
+                })
                 .unwrap_or_else(|_| Scalar::String(value.to_string()))
         }
     }
@@ -361,9 +426,7 @@ impl From<Scalar> for String {
         match value {
             Scalar::Null => "Null".to_string(),
             Scalar::String(val) => val,
-            _ => value.to_string()
+            _ => value.to_string(),
         }
     }
 }
-
-

@@ -7,7 +7,8 @@ use traits::{NullStorable, Slicer, BasicAggregation, NumericAggregation, Compari
 
 
 impl<T> BasicAggregation for NullVec<T>
-    where T: Clone + Zero + Add + NullStorable
+where
+    T: Clone + Zero + Add + NullStorable,
 {
     type Kept = Nullable<T>;
     type Counted = usize;
@@ -45,16 +46,19 @@ impl<T> BasicAggregation for NullVec<T>
 }
 
 fn mean_sq<T>(not_null: Vec<T>) -> f64
-    where T: Clone + ToPrimitive
+where
+    T: Clone + ToPrimitive,
 {
-    let not_null_f64: Vec<f64> = not_null.iter()
+    let not_null_f64: Vec<f64> = not_null
+        .iter()
         .map(|x| ToPrimitive::to_f64(x).unwrap())
         .collect();
     // use two pass algorithm, assuming data is not large
-    let mean: f64 = not_null_f64.iter()
-        .fold(0., |a, b| a + b) / (not_null_f64.len() as f64);
-    not_null_f64.into_iter()
-        .fold(0., |a, b| a + (b - mean) * (b - mean))
+    let mean: f64 = not_null_f64.iter().fold(0., |a, b| a + b) / (not_null_f64.len() as f64);
+    not_null_f64.into_iter().fold(
+        0.,
+        |a, b| a + (b - mean) * (b - mean),
+    )
 }
 
 
@@ -114,7 +118,8 @@ impl<T> NumericAggregation for NullVec<T>
 }
 
 impl<T> ComparisonAggregation for NullVec<T>
-    where T: Clone + PartialOrd + NullStorable
+where
+    T: Clone + PartialOrd + NullStorable,
 {
     type Kept = Nullable<T>;
 
