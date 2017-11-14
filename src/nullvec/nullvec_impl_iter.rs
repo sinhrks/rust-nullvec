@@ -7,7 +7,8 @@ use traits::{NullStorable, Slicer};
 // Convert from Iterators
 impl<T: NullStorable> FromIterator<T> for NullVec<T> {
     fn from_iter<I>(iter: I) -> Self
-        where I: IntoIterator<Item = T>
+    where
+        I: IntoIterator<Item = T>,
     {
         let values: Vec<T> = iter.into_iter().collect();
         NullVec::new(values)
@@ -16,7 +17,8 @@ impl<T: NullStorable> FromIterator<T> for NullVec<T> {
 
 impl<T: NullStorable> FromIterator<Nullable<T>> for NullVec<T> {
     fn from_iter<I>(iter: I) -> Self
-        where I: IntoIterator<Item = Nullable<T>>
+    where
+        I: IntoIterator<Item = Nullable<T>>,
     {
         let values: Vec<Nullable<T>> = iter.into_iter().collect();
         values.into()
@@ -99,7 +101,8 @@ pub struct NullVecRawIter<'a, T: 'a + Clone + NullStorable> {
 }
 
 impl<'a, T> Iterator for NullVecRawIter<'a, T>
-    where T: 'a + Clone + NullStorable
+where
+    T: 'a + Clone + NullStorable,
 {
     type Item = (bool, &'a T);
 
@@ -138,7 +141,8 @@ pub struct NullVecNotNullIter<'a, T: 'a + Clone + NullStorable> {
 }
 
 impl<'a, T> Iterator for NullVecNotNullIter<'a, T>
-    where T: 'a + Clone + NullStorable
+where
+    T: 'a + Clone + NullStorable,
 {
     type Item = &'a T;
 
@@ -149,7 +153,8 @@ impl<'a, T> Iterator for NullVecNotNullIter<'a, T>
             match self.data.mask {
                 Some(ref mask) => {
                     while (unsafe { *mask.get_unchecked(self.current) } == true) &
-                          (self.current < self.data.len()) {
+                        (self.current < self.data.len())
+                    {
                         self.current += 1;
                     }
                     if self.current >= self.data.len() {
@@ -271,9 +276,20 @@ mod tests {
     #[test]
     fn test_iter_not_null_long() {
         let values: Vec<usize> = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
-        let nvec = NullVec::with_mask(values,
-                                      Some(vec![true, false, false, true, true, true, false,
-                                                true, true]));
+        let nvec = NullVec::with_mask(
+            values,
+            Some(vec![
+                true,
+                false,
+                false,
+                true,
+                true,
+                true,
+                false,
+                true,
+                true,
+            ]),
+        );
         let mut it = nvec.iter_not_null();
         assert_eq!(it.size_hint(), (9, Some(9)));
 

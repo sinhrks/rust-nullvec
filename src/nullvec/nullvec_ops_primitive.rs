@@ -53,19 +53,21 @@ macro_rules! add_primitive_broadcast_arithmetic_op_patterns {
         add_primitive_broadcast_op!($t, Rem, rem, %);
     }
 }
-macro_dispatch!(add_primitive_broadcast_arithmetic_op_patterns,
-                i64,
-                i32,
-                i16,
-                i8,
-                isize,
-                u64,
-                u32,
-                u16,
-                u8,
-                usize,
-                f64,
-                f32);
+macro_dispatch!(
+    add_primitive_broadcast_arithmetic_op_patterns,
+    i64,
+    i32,
+    i16,
+    i8,
+    isize,
+    u64,
+    u32,
+    u16,
+    u8,
+    usize,
+    f64,
+    f32
+);
 
 macro_rules! add_primitive_broadcast_bitwise_op_patterns {
     ($t:ident) => {
@@ -74,18 +76,20 @@ macro_rules! add_primitive_broadcast_bitwise_op_patterns {
         add_primitive_broadcast_op!($t, BitXor, bitxor, ^);
     }
 }
-macro_dispatch!(add_primitive_broadcast_bitwise_op_patterns,
-                i64,
-                i32,
-                i16,
-                i8,
-                isize,
-                u64,
-                u32,
-                u16,
-                u8,
-                usize,
-                bool);
+macro_dispatch!(
+    add_primitive_broadcast_bitwise_op_patterns,
+    i64,
+    i32,
+    i16,
+    i8,
+    isize,
+    u64,
+    u32,
+    u16,
+    u8,
+    usize,
+    bool
+);
 
 #[cfg(test)]
 mod tests {

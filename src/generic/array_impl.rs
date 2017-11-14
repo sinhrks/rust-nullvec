@@ -3,7 +3,8 @@ use traits::{Stringify, Append};
 
 impl Array {
     pub fn new<I>(values: I) -> Self
-        where I: Into<Array>
+    where
+        I: Into<Array>,
     {
         values.into()
     }

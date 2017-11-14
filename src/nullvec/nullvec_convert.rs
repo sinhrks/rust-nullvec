@@ -84,21 +84,23 @@ macro_rules! impl_from {
         }
     }
 }
-macro_dispatch!(impl_from,
-                i64,
-                i32,
-                i16,
-                i8,
-                isize,
-                u64,
-                u32,
-                u16,
-                u8,
-                usize,
-                f64,
-                f32,
-                bool,
-                String);
+macro_dispatch!(
+    impl_from,
+    i64,
+    i32,
+    i16,
+    i8,
+    isize,
+    u64,
+    u32,
+    u16,
+    u8,
+    usize,
+    f64,
+    f32,
+    bool,
+    String
+);
 
 
 #[cfg(test)]

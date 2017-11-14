@@ -110,19 +110,21 @@ macro_rules! impl_from_never_nullable {
         }
     }
 }
-macro_dispatch!(impl_from_never_nullable,
-                i64,
-                i32,
-                i16,
-                i8,
-                isize,
-                u64,
-                u32,
-                u16,
-                u8,
-                usize,
-                bool,
-                String);
+macro_dispatch!(
+    impl_from_never_nullable,
+    i64,
+    i32,
+    i16,
+    i8,
+    isize,
+    u64,
+    u32,
+    u16,
+    u8,
+    usize,
+    bool,
+    String
+);
 
 macro_rules! impl_from_nullable {
     ($t:ident) => {
@@ -141,7 +143,11 @@ macro_dispatch!(impl_from_nullable, f64, f32);
 
 // Eq
 
-impl<T: NullStorable> Eq for Nullable<T> where T: Eq {}
+impl<T: NullStorable> Eq for Nullable<T>
+where
+    T: Eq,
+{
+}
 
 #[cfg(test)]
 mod tests {
