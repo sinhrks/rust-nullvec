@@ -1,6 +1,6 @@
 [package]
 name = "nullvec"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["sinhrks <sinhrks@gmail.com>"]
 license = "BSD-3-Clause"
 readme = "README.md"
@@ -11,4 +11,4 @@ documentation = "https://docs.rs/nullvec/"
 repository = "https://github.com/sinhrks/rust-nullvec"
 
 [dependencies]
-num = "0.1.40"
+num-traits = "0.1.40"
