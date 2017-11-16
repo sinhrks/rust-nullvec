@@ -1,4 +1,4 @@
-extern crate num;
+extern crate num_traits;
 
 // macro must be defined first to be usable in other modules
 #[macro_use]

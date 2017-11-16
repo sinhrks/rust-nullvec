@@ -1,4 +1,4 @@
-use num::{Zero, ToPrimitive};
+use num_traits::{Zero, ToPrimitive};
 use std::ops::{Add, Sub, Div};
 
 use super::NullVec;
